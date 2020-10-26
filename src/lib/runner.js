@@ -9,7 +9,6 @@ class Runner {
   }
 
   setup(cwd) {
-    // console.log('setupTestBed for cwd', cwd);
     return new Promise(async (resolve, reject) => {
       try {
         this.rootDir = cwd;
@@ -23,8 +22,6 @@ class Runner {
   }
 
   runCommand(binPath, args) {
-    console.debug('binPath', binPath);
-    console.debug('args', args);
     return new Promise(async (resolve, reject) => {
       const cliPath = path.join(process.cwd(), binPath);
       let err = '';

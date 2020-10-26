@@ -12,7 +12,7 @@ const packageMainRunner = require('../../../src/index').Runner;
 
 describe('Package Main', function() {
 
-  describe('Runner from package.json main should match Runner class export', function() {
+  describe('Runner export from package.json main (index.js) should match Runner class export', function() {
 
     it('should be equal', function() {     
       expect(packageMainRunner).to.be.equal(Runner);

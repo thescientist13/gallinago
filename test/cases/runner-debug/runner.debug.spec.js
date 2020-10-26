@@ -4,8 +4,8 @@
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
  * Uaer Result
- * Should run cli.js runCommand successfully with setup, runCommand and teardown functions called
- *
+ * Should run cli.js runCommand and test debug output
+ * 
  * runCommand
  * runCommand('test/fixtures/cli', 'test/fixtures')
  *
@@ -16,7 +16,7 @@ const path = require('path');
 const rimraf = require('rimraf');
 const Runner = require('../../../src/index').Runner;
 
-describe('CLI Fixture', function() {
+describe('CLI Fixture w/debug (stdOut) enabled', function() {
   let runner;
   let basePath;
 
@@ -24,7 +24,7 @@ describe('CLI Fixture', function() {
     await fs.mkdir(path.join(__dirname, './output'));
 
     basePath = path.join(__dirname, './output');
-    runner = new Runner();
+    runner = new Runner(true);
 
     await runner.setup(basePath);
   });
