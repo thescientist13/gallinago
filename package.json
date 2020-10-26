@@ -5,15 +5,19 @@
   "main": "src/index.js",
   "author": "Owen Buckley <owen@thegreenhouse.io>",
   "license": "MIT",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thescientist13/gallinago.git"
   },
-  "bugs": {
-    "url": "https://github.com/thescientist13/gallinago/issues"
+  "scripts": {
+    "lint": "eslint \"*.js\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
+    "test": "nyc mocha",
+    "test:tdd": "yarn test --watch"
   },
-  "homepage": "https://github.com/thescientist13/gallinago#readme"
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.12.0",
+    "mocha": "^8.2.0",
+    "nyc": "^15.1.0"
+  }
 }
