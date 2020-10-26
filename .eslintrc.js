@@ -4,8 +4,8 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
-    browser: true,
-    node: false
+    browser: false,
+    node: true
   },
   rules: {
     'comma-dangle': [2, 'never'],
