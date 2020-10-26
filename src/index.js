@@ -1,9 +1,6 @@
-console.log('hello world');
-
-function add(one, two) {
-  return one + two;
-}
+#!/usr/bin/env node
+const Runner = require('./lib/runner');
 
 module.exports = {
-  add
+  Runner
 };

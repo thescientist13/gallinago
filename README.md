@@ -21,3 +21,14 @@ $ yarn add gallinago --dev
 
 ## Usage
 // TODO
+
+
+
+
+/*
+ * This module can be used to assist in the development of test cases that want run in a userland like environment
+ * to recreate project configurations, config files, fixtures, etc.
+ * 
+ * The main goal is to be able to easily simulate any "real world" scenario you might need to test for.
+ *
+ */
