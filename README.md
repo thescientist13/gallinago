@@ -1,13 +1,17 @@
 # gallinago
 
-[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS bacsed package designed to help with the running and testing of CLIs by simulating different user environments and configurations you create for your CLI.
+[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
+
 
 ## Overview 
-Often times while creating CLIs with configuration files or that are used for scaffolding, being able to simulate user directories of different kinds can be especially helpful. "cases" , in particular scaffolding type tools and thos
+Often times while creating CLIs, it is helpful to be able to test the final output of the tool in response to the input of various configurations of your CLI.  Config files, directory scaffolding will all likely (and hopefolly)  idempotent output thay can be validated.  With a testing framework like mocha, you could use Gallinago to verify things like:
+- Were the right files made?
+- Was the output what I expected?
+- Were _too_ many files created?
+- Does it work for configuration A?
+- Does it work for configuration B?
+- etc
 
-```sh
-// TODO
-```
 
 ## Install
 Use npm or Yarn (1.x) to install Gallinago as a (dev) dependency.
@@ -19,16 +23,64 @@ $ npm install gallinago --dev
 $ yarn add gallinago --dev
 ```
 
+
 ## Usage
-// TODO
+To use Gallinago, you will just need two things
+1. an absolute path to your CLI
+1. An absolute path to the diretory you want Gallinago to do its work in
+
+```js
+const path = require('path');
+const Runner = require('gallinago').Runner;
+const runner = new Runner();
+
+const cliPath = path.join('/path/to/cli.js'); // required
+const buildDir = path.join(__dirname, './build'); // required
+
+// this will also create the directory as well 
+await runner.setup(buildDir);
+
+// runs your CLI
+// use the second param to pass any args
+await runner.runCommand(cliPath);
+
+// teardown any created files in outputDir
+await runner.teardown()
+```
+
+## API
+
+### Runner
+The `Runner` constructor returns a new instance of `Runner`.
+
+```js
+const Runner = require('gallinago').Runner;
+const runner = new Runner();  // pass true to the constructor to enable stdout
+```
+
+### Runner.setup (required)
+`Runner.setup` initializes a targetDirectory for the command to run in.  Returns a `Promise`.
+
+```js
+await runner.setup(__dirname);
+```
+
+### Runner.runCommand
+`Runner.runCommand` runs the script provided to into against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
+
+```js
+await runner.runCommand(
+  '/path/to/cli.js',
+  '--version'
+);
+```
+
+### Runner.teardown
+`Runner.teardown` delets the target directory providxed in `Runner.setup`.  Returns a `Promise`.
+
+```js
+await runner.teardown();
+```
 
 
-
-
-/*
- * This module can be used to assist in the development of test cases that want run in a userland like environment
- * to recreate project configurations, config files, fixtures, etc.
- * 
- * The main goal is to be able to easily simulate any "real world" scenario you might need to test for.
- *
- */
+_See the [our tests](https://github.com/thescientist13/gallinago/blob/enhancement/issue-1-basic-features/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action!_
