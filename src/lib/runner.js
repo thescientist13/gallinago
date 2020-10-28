@@ -22,10 +22,7 @@ class Runner {
           await Promise.all(setupFiles.map((file) => {
             return new Promise(async (resolve, reject) => {
               try {
-                // const targetSrc = path.join(file.from, file.name);
-                // const targetDir = path.join(cwd, file.dir);
-                // const targetPath = path.join(cwd, file.dir, file.name);
-  
+                 
                 await new Promise(async(resolve, reject) => {
                   try {
                     fs.mkdirSync(path.dirname(file.destination), { recursive: true });
