@@ -1,29 +1,37 @@
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
 class Runner {
-  constructor(enableStdOut) {
-    this.rootDir = process.cwd();
+  constructor(enableStdOut = false) {
     this.enableStdOut = enableStdOut; // debugging tests
   }
 
-  setup(cwd) {
+  setup(rootDir) {
     return new Promise(async (resolve, reject) => {
       try {
-        this.rootDir = cwd;
+        if (path.isAbsolute(rootDir)) {
+
+          if (!fs.existsSync(rootDir)) {
+            fs.mkdirSync(rootDir);
+          }
+
+          this.rootDir = rootDir;
+        } else {
+          reject(err);
+        }
 
         resolve();
       } catch (err) {
         reject(err);
       }
-
     });
   }
 
   runCommand(binPath, args) {
     return new Promise(async (resolve, reject) => {
-      const cliPath = path.join(process.cwd(), binPath);
+      const cliPath = binPath;
       let err = '';
       
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
@@ -56,21 +64,17 @@ class Runner {
     });
   }
 
-  // teardown() {
-  //   return new Promise(async(resolve, reject) => {
-  //     try {
-  //       await fs.remove(path.join(this.rootDir, '.greenwood'));
-  //       await fs.remove(path.join(this.rootDir, 'public'));
-
-  //       await Promise.all(setupFiles.map((file) => {
-  //         return fs.remove(path.join(this.rootDir, file.dir.split('/')[0]));
-  //       }));
-  //       resolve();
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // }
+  teardown() {
+    return new Promise(async(resolve, reject) => {
+      try {
+        fs.rmdirSync(this.rootDir, { recursive: true });
+        
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 }
 
 module.exports = Runner;
