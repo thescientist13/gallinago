@@ -18,11 +18,10 @@ class Runner {
           }
 
           this.rootDir = rootDir;
+          resolve();
         } else {
-          reject(err);
+          reject('Error: rootDir is not an absolute path');
         }
-
-        resolve();
       } catch (err) {
         reject(err);
       }
