@@ -31,7 +31,7 @@ $ yarn add gallinago --dev
 
 ## Usage
 To use Gallinago, you will just need two things
-1. an absolute path to your CLI
+1. An absolute path to your CLI
 1. An absolute path to the diretory you want Gallinago to do its work in
 
 ```js
