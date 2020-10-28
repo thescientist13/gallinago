@@ -70,6 +70,18 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 await runner.setup(__dirname);
 ```
 
+Optionally, you can provide "setup" files if you want to include additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
+
+* `source`: path of the file to copy
+* `destination`: path of where to copy the file to
+
+```js
+await runner.setup(__dirname, [{
+  source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
+  destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
+}]);
+```
+
 ### Runner.runCommand
 `Runner.runCommand` runs the script provided to into against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
@@ -77,7 +89,7 @@ await runner.setup(__dirname);
 await runner.runCommand(
   '/path/to/cli.js',
   '--version'
-);
+);git
 ```
 
 ### Runner.teardown

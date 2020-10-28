@@ -62,6 +62,51 @@ describe('CLI Fixture', function() {
     });
   });
 
+  describe('setup with setupFiles', function() {
+    before(async function() {
+      await runner.setup(outputPath, [{
+        source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
+        destination: path.join(outputPath, 'webcomponents-bundle.js')
+      }]);
+      await runner.runCommand(
+        `${fixturesPath}/cli.js`, // binPath
+        fixturesPath // args
+      );
+    });
+
+    it('should have created the output folder', function() {
+      const exists = fs.existsSync(outputPath);
+
+      expect(exists).to.be.equal(true);
+    });
+
+    it('should only copy 4 files', function() {
+      const files = fs.readdirSync(outputPath);
+     
+      expect(files.length).to.be.equal(4);
+    });
+
+    it('should have an .editorconfig file', function() {
+      expect(fs.existsSync(`${outputPath}/.editorconfig`)).to.be.equal(true);
+    });
+
+    it('should have an .eslintrc file', function() {
+      expect(fs.existsSync(`${outputPath}/.eslintrc.js`)).to.be.equal(true);
+    });
+
+    it('should have .mocharc.js file', function() {
+      expect(fs.existsSync(`${outputPath}/.mocharc.js`)).to.be.equal(true);
+    });
+
+    it('should have webcomponents-bundle.js file', function() {
+      expect(fs.existsSync(`${outputPath}/.mocharc.js`)).to.be.equal(true);
+    });
+
+    after(async function() {
+      await runner.teardown();
+    });
+  });
+
   describe('teardown', function() {
     it('should have deleted all the files', function() {
       const exists = fs.existsSync(outputPath);

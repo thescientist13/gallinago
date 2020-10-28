@@ -8,7 +8,7 @@ class Runner {
     this.enableStdOut = enableStdOut; // debugging tests
   }
 
-  setup(rootDir) {
+  setup(rootDir, setupFiles = []) {
     return new Promise(async (resolve, reject) => {
       try {
         if (path.isAbsolute(rootDir)) {
@@ -18,6 +18,32 @@ class Runner {
           }
 
           this.rootDir = rootDir;
+
+          await Promise.all(setupFiles.map((file) => {
+            return new Promise(async (resolve, reject) => {
+              try {
+                // const targetSrc = path.join(file.from, file.name);
+                // const targetDir = path.join(cwd, file.dir);
+                // const targetPath = path.join(cwd, file.dir, file.name);
+  
+                await new Promise(async(resolve, reject) => {
+                  try {
+                    fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+                    fs.copyFileSync(file.source, file.destination);
+                  } catch (e) {
+                    reject(e);
+                  }
+                  
+                  resolve();
+                });
+              } catch (e) {
+                reject(e);
+              }
+
+              resolve();
+            });
+          }));
+            
           resolve();
         } else {
           reject('Error: rootDir is not an absolute path');
