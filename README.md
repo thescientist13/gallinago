@@ -70,7 +70,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 await runner.setup(__dirname);
 ```
 
-Optionally, you can provide "setup" files if you want to pull additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
+Optionally, you can provide "setup" files if you want to include additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
 
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
@@ -89,7 +89,7 @@ await runner.setup(__dirname, [{
 await runner.runCommand(
   '/path/to/cli.js',
   '--version'
-);
+);git
 ```
 
 ### Runner.teardown
