@@ -5,10 +5,18 @@
   "main": "src/index.js",
   "author": "Owen Buckley <owen@thegreenhouse.io>",
   "license": "MIT",
+  "keywords": [
+    "testing",
+    "nodejs",
+    "CLI"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thescientist13/gallinago.git"
   },
+  "files": [
+    "src/"
+  ],
   "scripts": {
     "lint": "eslint \"*.js\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
     "test": "nyc mocha",

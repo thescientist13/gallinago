@@ -1,7 +1,12 @@
 # gallinago
+[![GitHub release](https://img.shields.io/github/tag/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/tags)
+![GitHub Actions status](https://github.com/thescientist13/gallinago/workflows/Master%20Integration/badge.svg)
+[![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thescientist13/gallinago/master/LICENSE.md)
 
 [**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
 
+![gallinago](./.github/assets/gallinago.jpg)
 
 ## Overview 
 Often times while creating CLIs, it is helpful to be able to test the final output of the tool in response to the input of various configurations of your CLI.  Config files, directory scaffolding will all likely (and hopefolly)  idempotent output thay can be validated.  With a testing framework like mocha, you could use Gallinago to verify things like:
