@@ -9,8 +9,8 @@
 ![gallinago](./.github/assets/gallinago.jpg)
 
 ## Overview 
-Often times while creating CLIs, it is helpful to be able to test the final output of the tool in response to the input of various configurations of your CLI.  Config files, directory scaffolding will all likely (and hopefolly)  idempotent output thay can be validated.  With a testing framework like mocha, you could use Gallinago to verify things like:
-- Were the right files made?
+Often times while creating CLIs, it can be helpful to test the final output of a tool in response to the various configurations of your CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like mocha, you could use Gallinago to verify that output to validate things like:
+- Were the right files created?
 - Was the output what I expected?
 - Were _too_ many files created?
 - Does it work for configuration A?
@@ -49,7 +49,7 @@ await runner.setup(buildDir);
 // use the second param to pass any args
 await runner.runCommand(cliPath);
 
-// teardown any created files in outputDir
+// teardown buildDir
 await runner.teardown()
 ```
 
@@ -70,7 +70,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 await runner.setup(__dirname);
 ```
 
-Optionally, you can provide "setup" files if you want to include additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
+Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
 
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
@@ -83,7 +83,7 @@ await runner.setup(__dirname, [{
 ```
 
 ### Runner.runCommand
-`Runner.runCommand` runs the script provided to into against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
+`Runner.runCommand` runs the script provided to Gallinago against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
 await runner.runCommand(
