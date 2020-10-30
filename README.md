@@ -89,7 +89,7 @@ await runner.setup(__dirname, [{
 await runner.runCommand(
   '/path/to/cli.js',
   '--version'
-);git
+);
 ```
 
 ### Runner.teardown
