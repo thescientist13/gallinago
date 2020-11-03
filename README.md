@@ -50,7 +50,7 @@ await runner.setup(buildDir);
 await runner.runCommand(cliPath);
 
 // teardown buildDir
-await runner.teardown()
+await runner.teardown();
 ```
 
 ## API
