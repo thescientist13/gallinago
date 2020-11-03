@@ -9,7 +9,7 @@
 ![gallinago](./.github/assets/gallinago.jpg)
 
 ## Overview 
-Often times while creating CLIs, it can be helpful to test the final output of a tool in response to the various configurations of your CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
+Often times while creating CLIs, it can be helpful to test the final output given the various configurations of the CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
 - Were the right files created?
 - Was the output what I expected?
 - Were _too_ many files created?
