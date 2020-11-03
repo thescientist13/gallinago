@@ -4,12 +4,12 @@
 [![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thescientist13/gallinago/master/LICENSE.md)
 
-[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
+[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with the running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
 
 ![gallinago](./.github/assets/gallinago.jpg)
 
 ## Overview 
-Often times while creating CLIs, it can be helpful to test the final output of a tool in response to the various configurations of your CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
+Often times while creating CLIs, it can be helpful to test the final output given the various configurations of the CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
 - Were the right files created?
 - Was the output what I expected?
 - Were _too_ many files created?
@@ -32,7 +32,7 @@ $ yarn add gallinago --dev
 ## Usage
 To use Gallinago, you will just need two things
 1. An absolute path to your CLI
-1. An absolute path to the diretory you want Gallinago to do its work in
+1. An absolute path to the directory you want Gallinago to run your CLI in
 
 ```js
 const path = require('path');
@@ -50,7 +50,7 @@ await runner.setup(buildDir);
 await runner.runCommand(cliPath);
 
 // teardown buildDir
-await runner.teardown()
+await runner.teardown();
 ```
 
 ## API
@@ -64,13 +64,13 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 
 ### Runner.setup (required)
-`Runner.setup` initializes a targetDirectory for the command to run in.  Returns a `Promise`.
+`Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
 
 ```js
 await runner.setup(__dirname);
 ```
 
-Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
+Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide these files as an array of objects.
 
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
@@ -83,7 +83,7 @@ await runner.setup(__dirname, [{
 ```
 
 ### Runner.runCommand
-`Runner.runCommand` runs the script provided to Gallinago against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
+`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
 await runner.runCommand(
@@ -93,10 +93,10 @@ await runner.runCommand(
 ```
 
 ### Runner.teardown
-`Runner.teardown` delets the target directory providxed in `Runner.setup`.  Returns a `Promise`.
+`Runner.teardown` deletes the directory provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
 await runner.teardown();
 ```
 
-_See the [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action!_
+_See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action._
