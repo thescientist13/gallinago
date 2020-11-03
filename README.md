@@ -32,7 +32,7 @@ $ yarn add gallinago --dev
 ## Usage
 To use Gallinago, you will just need two things
 1. An absolute path to your CLI
-1. An absolute path to the diretory you want Gallinago to do its work in
+1. An absolute path to the directory you want Gallinago to run your CLI in
 
 ```js
 const path = require('path');
@@ -64,13 +64,13 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 
 ### Runner.setup (required)
-`Runner.setup` initializes a targetDirectory for the command to run in.  Returns a `Promise`.
+`Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
 
 ```js
 await runner.setup(__dirname);
 ```
 
-Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide the following as an array of objects.
+Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide these files as an array of objects.
 
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
@@ -83,7 +83,7 @@ await runner.setup(__dirname, [{
 ```
 
 ### Runner.runCommand
-`Runner.runCommand` runs the script provided to Gallinago against the target directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
+`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
 await runner.runCommand(
@@ -93,7 +93,7 @@ await runner.runCommand(
 ```
 
 ### Runner.teardown
-`Runner.teardown` delets the target directory providxed in `Runner.setup`.  Returns a `Promise`.
+`Runner.teardown` deletes the directory provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
 await runner.teardown();
