@@ -4,7 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thescientist13/gallinago/master/LICENSE.md)
 
-[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
+[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is a NodeJS package designed to assist with the running of CLIs against directories that can be pre-scaffolded as needed to reproduce various configuration and folder structures your CLI may need to support for its users.  Perfect for testing!
 
 ![gallinago](./.github/assets/gallinago.jpg)
 
