@@ -1,7 +1,7 @@
 {
   "name": "gallinago",
   "version": "0.2.0",
-  "description": "Gallinago is a NodeJS bacsed package designed to help with the running and testing of CLIs.",
+  "description": "Gallinago is a NodeJS based package designed to help with the running and testing of CLIs.",
   "main": "src/index.js",
   "author": "Owen Buckley <owen@thegreenhouse.io>",
   "license": "MIT",
