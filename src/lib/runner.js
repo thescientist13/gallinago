@@ -6,9 +6,12 @@ const { spawn } = require('child_process');
 class Runner {
   constructor(enableStdOut = false) {
     this.enableStdOut = enableStdOut; // debugging tests
+    this.setupFiles = [];
   }
 
   setup(rootDir, setupFiles = []) {
+    this.setupFiles = setupFiles;
+
     return new Promise(async (resolve, reject) => {
       try {
         if (path.isAbsolute(rootDir)) {
@@ -40,7 +43,6 @@ class Runner {
               resolve();
             });
           }));
-            
           resolve();
         } else {
           reject('Error: rootDir is not an absolute path');
@@ -86,11 +88,22 @@ class Runner {
     });
   }
 
-  teardown() {
-    return new Promise(async(resolve, reject) => {
+  teardown(additionalFiles = []) {
+    return new Promise(async (resolve, reject) => {
       try {
-        fs.rmdirSync(this.rootDir, { recursive: true });
-        
+        this.setupFiles.concat(additionalFiles).forEach((file) => {
+          const deletePath = file.destination
+            ? file.destination
+            : file;
+
+          if (fs.lstatSync(deletePath).isDirectory()) {
+            fs.rmdirSync(deletePath, { recursive: true });
+          } else {
+            fs.unlinkSync(deletePath);
+          }
+        });
+        this.setupFiles = [];
+
         resolve();
       } catch (err) {
         reject(err);
