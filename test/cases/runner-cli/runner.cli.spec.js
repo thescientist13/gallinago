@@ -18,13 +18,17 @@ const Runner = require('../../../src/index').Runner;
 describe('CLI Fixture', function() {
   const outputPath = path.join(__dirname, './output');
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
+  const setupFiles = [{
+    source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
+    destination: path.join(outputPath, 'webcomponents-bundle.js')
+  }];
   let runner;
 
-  before(async function() {
-    runner = new Runner();
-  });
-
   describe('default options with relative path', function() {
+    before(async function() {
+      runner = new Runner();
+    });
+
     before(async function() {
       await runner.setup(outputPath);
       await runner.runCommand(
@@ -57,17 +61,20 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.js`)).to.be.equal(true);
     });
 
-    after(async function() {
-      await runner.teardown();
+    it('should delete the output directory when told', async function() {
+      await runner.teardown([outputPath]);
+
+      expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
   });
 
   describe('setup with setupFiles', function() {
     before(async function() {
-      await runner.setup(outputPath, [{
-        source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
-        destination: path.join(outputPath, 'webcomponents-bundle.js')
-      }]);
+      runner = new Runner();
+    });
+
+    before(async function() {
+      await runner.setup(outputPath, setupFiles);
       await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
@@ -99,19 +106,19 @@ describe('CLI Fixture', function() {
     });
 
     it('should have webcomponents-bundle.js file', function() {
-      expect(fs.existsSync(`${outputPath}/.mocharc.js`)).to.be.equal(true);
+      expect(fs.existsSync(`${outputPath}/webcomponents-bundle.js`)).to.be.equal(true);
     });
 
-    after(async function() {
+    it('should delete the setup file we provided', async function() {
+      const setupFile = path.join(outputPath, 'webcomponents-bundle.js');
       await runner.teardown();
-    });
-  });
 
-  describe('teardown', function() {
-    it('should have deleted all the files', function() {
-      const exists = fs.existsSync(outputPath);
+      expect(fs.existsSync(setupFile)).to.be.equal(false);
+      expect(fs.existsSync(outputPath)).to.be.equal(true);
 
-      expect(exists).to.be.equal(false);
+      // cleanup everything
+      await runner.teardown([outputPath]);
+      expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
   });
 });

@@ -93,10 +93,21 @@ await runner.runCommand(
 ```
 
 ### Runner.teardown
-`Runner.teardown` deletes the directory provided in `Runner.setup`.  Returns a `Promise`.
+`Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
 await runner.teardown();
+```
+
+You can pass additional files or directories to `teardown` to have **gallinago** delete those too.
+```js
+await runner.teardown([
+  path.join(__dirname, 'build'),
+  path.join(__dirname, 'fixtures'),
+  .
+  .
+  .
+]);
 ```
 
 > _See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action._
