@@ -92,7 +92,7 @@ class Runner {
 
   stopCommand() {
     if (this.childProcess) {
-      process.kill(-this.childProcess.pid);
+      process.kill(-this.childProcess.pid, 'SIGKILL');
     }
   }
 
