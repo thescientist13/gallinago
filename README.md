@@ -113,15 +113,15 @@ await runner.teardown([
 ### Runner.stopCommand
 In certain circumstances, the command you are running may do a couple things:
 - spawn its own child processes
-- not close its own process (and thus never [`resolve()` the on close event Promise]())
+- not close its own process (and thus never [`resolve()` the on.close event callback](https://github.com/thescientist13/gallinago/blob/0.3.0/src/lib/runner.js#L67))
 
-The most common use case for supporting this is running a server, like for [file reloading](https://www.npmjs.com/package/livereload) or [production sites](https://koajs.com/).
+The most common use case for this is when running a server, like for [file reloading](https://www.npmjs.com/package/livereload) or [production sites](https://koajs.com/).  In these cases, servers dont usually stop unless told to, usually by killing their process.
 
-To support this, you can use the `Runner.stopCommand` to kill any and all processes associated with `runCommand`, since Node processes [dont kill their children when they themselves are killed](https://azimi.me/2014/12/31/kill-child_process-node-js.html))
+To support this, you can use `Runner.stopCommand` to kill any and all processes associated with `runCommand`, since Node processes [dont kill their children when they themselves are killed](https://azimi.me/2014/12/31/kill-child_process-node-js.html))
 
 
 ```js
 await runner.stopCommand();
 ```
 
-> When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example.
+> _When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example._
