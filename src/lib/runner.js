@@ -7,6 +7,7 @@ class Runner {
   constructor(enableStdOut = false) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.setupFiles = [];
+    this.childProcess = null;
   }
 
   setup(rootDir, setupFiles = []) {
@@ -57,22 +58,23 @@ class Runner {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       let err = '';
-      
+
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
-      const npm = spawn(runner, [cliPath, args], {
+      this.childProcess = spawn(runner, [cliPath, args], {
         cwd: this.rootDir,
-        shell: true
+        shell: false,
+        detached: true
       });
 
-      npm.on('close', code => {
-        if (code !== 0) {
+      this.childProcess.on('close', code => {
+        if (code && code !== 0) {
           reject(err);
           return;
         }
         resolve();
       });
 
-      npm.stderr.on('data', (data) => {
+      this.childProcess.stderr.on('data', (data) => {
         err = data.toString('utf8');
         if (this.enableStdOut) {
           console.error(err); // eslint-disable-line
@@ -80,12 +82,18 @@ class Runner {
         reject(err);
       });
 
-      npm.stdout.on('data', (data) => {
+      this.childProcess.stdout.on('data', (data) => {
         if (this.enableStdOut) {
           console.log(data.toString('utf8')); // eslint-disable-line
         }
       });
     });
+  }
+
+  stopCommand() {
+    if (this.childProcess) {
+      process.kill(-this.childProcess.pid);
+    }
   }
 
   teardown(additionalFiles = []) {
