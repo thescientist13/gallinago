@@ -21,12 +21,11 @@ describe('Server Fixture for Manual Process Stop', function() {
   const outputPath = path.join(__dirname, './output');
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
   let runner;
-  
-  before(function() {
-    runner = new Runner(true);
-  });
 
   describe('default behavior using runner.stopCommand', function() {
+    before(function() {
+      runner = new Runner(true);
+    });
 
     before(async function() {
       await runner.setup(outputPath);
@@ -55,6 +54,9 @@ describe('Server Fixture for Manual Process Stop', function() {
   });
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
+    before(function() {
+      runner = new Runner(true);
+    });
 
     it('should run without issue', function(done) {
       runner.stopCommand();

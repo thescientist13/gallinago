@@ -61,7 +61,6 @@ class Runner {
       });
 
       this.childProcess.stderr.on('data', (data) => {
-        console.debug('data####', data);
         err = data.toString('utf8');
         if (this.enableStdOut) {
           console.error(err); // eslint-disable-line
