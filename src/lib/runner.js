@@ -42,7 +42,7 @@ class Runner {
       let err = '';
 
       if (!fs.existsSync(binPath)) {
-        reject(`Error: Cannot find path ${binPath}`)
+        reject(`Error: Cannot find path ${binPath}`);
       }
 
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
