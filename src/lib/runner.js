@@ -10,7 +10,7 @@ class Runner {
     this.childProcess = null;
   }
 
-  async setup(rootDir, setupFiles = []) {
+  setup(rootDir, setupFiles = []) {
     this.setupFiles = setupFiles;
 
     return new Promise((resolve, reject) => {
@@ -36,7 +36,7 @@ class Runner {
     });
   }
 
-  async runCommand(binPath, args = '') {
+  runCommand(binPath, args = '') {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       let err = '';
@@ -86,7 +86,7 @@ class Runner {
     }
   }
 
-  async teardown(additionalFiles = []) {
+  teardown(additionalFiles = []) {
     return new Promise(async (resolve, reject) => {
       try {
         this.setupFiles.concat(additionalFiles).forEach((file) => {
