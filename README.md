@@ -125,3 +125,7 @@ await runner.stopCommand();
 ```
 
 > _When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example._
+
+----
+
+> _See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action._
