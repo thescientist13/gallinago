@@ -53,4 +53,13 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner.stopCommand();
     });
   });
+
+  describe('should not error if calling runner.stopCommand with no active command running', function() {
+
+    it('should run without issue', function(done) {
+      runner.stopCommand();
+      done();
+    });
+  });
+
 });

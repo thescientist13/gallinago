@@ -10,54 +10,40 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, setupFiles = []) {
+  async setup(rootDir, setupFiles = []) {
     this.setupFiles = setupFiles;
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (path.isAbsolute(rootDir)) {
+    return new Promise((resolve, reject) => {
+      if (path.isAbsolute(rootDir)) {
 
-          if (!fs.existsSync(rootDir)) {
-            fs.mkdirSync(rootDir);
-          }
-
-          this.rootDir = rootDir;
-
-          await Promise.all(setupFiles.map((file) => {
-            return new Promise(async (resolve, reject) => {
-              try {
-                 
-                await new Promise(async(resolve, reject) => {
-                  try {
-                    fs.mkdirSync(path.dirname(file.destination), { recursive: true });
-                    fs.copyFileSync(file.source, file.destination);
-                  } catch (e) {
-                    reject(e);
-                  }
-                  
-                  resolve();
-                });
-              } catch (e) {
-                reject(e);
-              }
-
-              resolve();
-            });
-          }));
-          resolve();
-        } else {
-          reject('Error: rootDir is not an absolute path');
+        if (!fs.existsSync(rootDir)) {
+          fs.mkdirSync(rootDir);
         }
-      } catch (err) {
-        reject(err);
+
+        this.rootDir = rootDir;
+
+        if (setupFiles.length > 0) {
+          setupFiles.forEach((file) => {
+            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+            fs.copyFileSync(file.source, file.destination);
+          });
+        }
+
+        resolve();
+      } else {
+        reject('Error: rootDir is not an absolute path');
       }
     });
   }
 
-  runCommand(binPath, args) {
+  async runCommand(binPath, args = '') {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       let err = '';
+
+      if (!fs.existsSync(binPath)) {
+        reject(`Error: Cannot find path ${binPath}`)
+      }
 
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
       this.childProcess = spawn(runner, [cliPath, args], {
@@ -68,7 +54,7 @@ class Runner {
 
       this.childProcess.on('close', code => {
         if (code && code !== 0) {
-          reject(err);
+          // reject(err);
           return;
         }
         resolve();
@@ -79,7 +65,7 @@ class Runner {
         if (this.enableStdOut) {
           console.error(err); // eslint-disable-line
         }
-        reject(err);
+        // reject(err);
       });
 
       this.childProcess.stdout.on('data', (data) => {
@@ -92,11 +78,15 @@ class Runner {
 
   stopCommand() {
     if (this.childProcess) {
-      process.kill(-this.childProcess.pid, 'SIGKILL');
+      if (os.platform() === 'win32') {
+        spawn('taskkill', ['/pid', this.childProcess.pid, '/t', '/f']);
+      } else {
+        process.kill(-this.childProcess.pid, 'SIGKILL');
+      }
     }
   }
 
-  teardown(additionalFiles = []) {
+  async teardown(additionalFiles = []) {
     return new Promise(async (resolve, reject) => {
       try {
         this.setupFiles.concat(additionalFiles).forEach((file) => {
