@@ -15,15 +15,15 @@ module.exports = {
 
   checkCoverage: true,
 
-  lines: 80,
+  statements: 85,
+  branches: 75,
   functions: 80,
-  branches: 70,
-  statements: 80,
+  lines: 85,
 
   watermarks: {
-    lines: [75, 85],
-    functions: [75, 85],
+    statements: [75, 85],
     branches: [75, 85],
-    statements: [75, 85]
+    functions: [75, 85],
+    lines: [75, 85]
   }
 };
