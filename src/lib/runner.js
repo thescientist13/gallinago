@@ -53,8 +53,8 @@ class Runner {
       });
 
       this.childProcess.on('close', code => {
-        if (code && code !== 0) {
-          // reject(err);
+        if (err !== '' && code && code !== 0) {
+          reject(err);
           return;
         }
         resolve();

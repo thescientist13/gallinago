@@ -11,6 +11,7 @@
  *
  */
 const expect = require('chai').expect;
+const path = require('path');
 const Runner = require('../../../src/index').Runner;
 
 describe('CLI Error Handling', function() {
@@ -37,6 +38,18 @@ describe('CLI Error Handling', function() {
       } catch (err) {
         console.debug(err);
         expect(err).to.contain('Error: rootDir is not an absolute path');
+      }
+    });
+  });
+
+  describe('handling (and bubbling) an exception from the child process', function() {
+    it('should throw an error that this is child throwing (a Promise.reject)', async function() {
+      try {
+        const runner = new Runner();
+        await runner.setup(path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'));
+      } catch (err) {
+        console.debug(err);
+        expect(err).to.contain('Error: Child process throwing a Promise.reject to the parent.');
       }
     });
   });
