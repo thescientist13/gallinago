@@ -7,72 +7,60 @@ class Runner {
   constructor(enableStdOut = false) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.setupFiles = [];
+    this.childProcess = null;
   }
 
   setup(rootDir, setupFiles = []) {
     this.setupFiles = setupFiles;
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (path.isAbsolute(rootDir)) {
+    return new Promise((resolve, reject) => {
+      if (path.isAbsolute(rootDir)) {
 
-          if (!fs.existsSync(rootDir)) {
-            fs.mkdirSync(rootDir);
-          }
-
-          this.rootDir = rootDir;
-
-          await Promise.all(setupFiles.map((file) => {
-            return new Promise(async (resolve, reject) => {
-              try {
-                 
-                await new Promise(async(resolve, reject) => {
-                  try {
-                    fs.mkdirSync(path.dirname(file.destination), { recursive: true });
-                    fs.copyFileSync(file.source, file.destination);
-                  } catch (e) {
-                    reject(e);
-                  }
-                  
-                  resolve();
-                });
-              } catch (e) {
-                reject(e);
-              }
-
-              resolve();
-            });
-          }));
-          resolve();
-        } else {
-          reject('Error: rootDir is not an absolute path');
+        if (!fs.existsSync(rootDir)) {
+          fs.mkdirSync(rootDir);
         }
-      } catch (err) {
-        reject(err);
+
+        this.rootDir = rootDir;
+
+        if (setupFiles.length > 0) {
+          setupFiles.forEach((file) => {
+            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+            fs.copyFileSync(file.source, file.destination);
+          });
+        }
+
+        resolve();
+      } else {
+        reject('Error: rootDir is not an absolute path');
       }
     });
   }
 
-  runCommand(binPath, args) {
+  runCommand(binPath, args = '') {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       let err = '';
-      
+
+      if (!fs.existsSync(binPath)) {
+        reject(`Error: Cannot find path ${binPath}`);
+      }
+
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
-      const npm = spawn(runner, [cliPath, args], {
+      this.childProcess = spawn(runner, [cliPath, args], {
         cwd: this.rootDir,
-        shell: true
+        shell: false,
+        detached: true
       });
 
-      npm.on('close', code => {
-        if (code !== 0) {
-          reject(err);
+      this.childProcess.on('close', code => {
+        if (code && code !== 0) {
+          // reject(err);
           return;
         }
         resolve();
       });
 
-      npm.stderr.on('data', (data) => {
+      this.childProcess.stderr.on('data', (data) => {
         err = data.toString('utf8');
         if (this.enableStdOut) {
           console.error(err); // eslint-disable-line
@@ -80,12 +68,22 @@ class Runner {
         reject(err);
       });
 
-      npm.stdout.on('data', (data) => {
+      this.childProcess.stdout.on('data', (data) => {
         if (this.enableStdOut) {
           console.log(data.toString('utf8')); // eslint-disable-line
         }
       });
     });
+  }
+
+  stopCommand() {
+    if (this.childProcess) {
+      if (os.platform() === 'win32') {
+        spawn('taskkill', ['/pid', this.childProcess.pid, '/t', '/f']);
+      } else {
+        process.kill(-this.childProcess.pid, 'SIGKILL');
+      }
+    }
   }
 
   teardown(additionalFiles = []) {

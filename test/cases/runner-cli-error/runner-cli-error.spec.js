@@ -17,12 +17,14 @@ describe('CLI Error Handling', function() {
 
   describe('default options with incorrect binary path', function() {
     it('should throw an error that module cannot be found', async function() {
+      const binPath = 'test/fixtures/cliiiiii.js';
+
       try {
         const runner = new Runner();
         
-        await runner.runCommand('test/fixtures/cliiiiii.js');
+        await runner.runCommand(binPath);
       } catch (err) {
-        expect(err).to.contain('Error: Cannot find module ');
+        expect(err).to.equal(`Error: Cannot find path ${binPath}`);
       }
     });
   });

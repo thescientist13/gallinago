@@ -53,6 +53,8 @@ await runner.runCommand(cliPath);
 await runner.teardown();
 ```
 
+> _See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action!_
+
 ## API
 
 ### Runner
@@ -110,4 +112,18 @@ await runner.teardown([
 ]);
 ```
 
-> _See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action._
+### Runner.stopCommand
+In certain circumstances, the command (process) you are running may do a couple things:
+- Spawn its own child process(es), [which is independent of the lifecycle of its parent process](https://azimi.me/2014/12/31/kill-child_process-node-js.html)
+- Not close itself (and thus never [`resolve()` the `on.close` event callback](https://github.com/thescientist13/gallinago/blob/0.3.0/src/lib/runner.js#L67))
+
+> _This isn't an issue per se, but if the (child) process doesn't stop, it will prevent the current (parent) process from completing.  The most common case for something like this to happen is when starting a [(web) server](https://koajs.com/).  Servers dont usually stop unless told to, usually by killing their process manually using something like [**PM2**](https://pm2.keymetrics.io/), or if in a shell, using CTR+C on the keyboard._
+
+To support this in Gallinago, you can use `Runner.stopCommand` to kill any and all processes associated with your `runCommand`.
+
+
+```js
+await runner.stopCommand();
+```
+
+> _**Note**: When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process and still advance the parent Mocha process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example._
