@@ -18,6 +18,9 @@
   "files": [
     "src/"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "exports": {
     ".": "./src/index.js"
   },

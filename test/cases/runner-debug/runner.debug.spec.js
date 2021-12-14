@@ -56,7 +56,7 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
       expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
     });
 
-    it('should have .mocharc.js file', function() {
+    it('should have .mocharc file', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
   });

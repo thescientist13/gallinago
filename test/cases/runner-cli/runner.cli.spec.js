@@ -60,7 +60,7 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
     });
 
-    it('should have .mocharc.js file', function() {
+    it('should have .mocharc file', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
 
@@ -104,8 +104,8 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
     });
 
-    it('should have .mocharc.js file', function() {
-      expect(fs.existsSync(`${outputPath}/.mocharc.js`)).to.be.equal(true);
+    it('should have .mocharc file', function() {
+      expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
 
     it('should have webcomponents-bundle.js file', function() {
