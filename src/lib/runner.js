@@ -1,7 +1,7 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawn } = require('child_process');
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { spawn } from 'child_process';
 
 class Runner {
   constructor(enableStdOut = false) {
@@ -16,8 +16,38 @@ class Runner {
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
 
+<<<<<<< HEAD
         if (!fs.existsSync(rootDir)) {
           fs.mkdirSync(rootDir);
+=======
+          this.rootDir = rootDir;
+
+          await Promise.all(setupFiles.map((file) => {
+            return new Promise(async (resolve, reject) => {
+              try {
+
+                await new Promise(async(resolve, reject) => {
+                  try {
+                    fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+                    fs.copyFileSync(file.source, file.destination);
+                  } catch (e) {
+                    reject(e);
+                  }
+
+                  resolve();
+                });
+              } catch (e) {
+                reject(e);
+              }
+
+              resolve();
+            });
+          }));
+
+          resolve();
+        } else {
+          reject('Error: rootDir is not an absolute path');
+>>>>>>> 8777a77 (migrate project to ESM)
         }
 
         this.rootDir = rootDir;
@@ -41,10 +71,13 @@ class Runner {
       const cliPath = binPath;
       let err = '';
 
+<<<<<<< HEAD
       if (!fs.existsSync(binPath)) {
         reject(`Error: Cannot find path ${binPath}`);
       }
 
+=======
+>>>>>>> 8777a77 (migrate project to ESM)
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
       this.childProcess = spawn(runner, [cliPath, args], {
         cwd: this.rootDir,
@@ -95,7 +128,7 @@ class Runner {
             : file;
 
           if (fs.lstatSync(deletePath).isDirectory()) {
-            fs.rmdirSync(deletePath, { recursive: true });
+            fs.rmSync(deletePath, { recursive: true });
           } else {
             fs.unlinkSync(deletePath);
           }
@@ -110,4 +143,6 @@ class Runner {
   }
 }
 
-module.exports = Runner;
+export {
+  Runner
+};

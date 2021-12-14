@@ -1,18 +1,20 @@
 /*
  * Use Case
- * Runs the CLI fixture that copies dot files from fixtures directory.  Based 
+ * Runs the CLI fixture that copies dot files from fixtures directory.  Based
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
  * Uaer Result
  * Should succesfully catch the error from invalid binary path.
- * 
+ *
  * runCommand
  * runCommand('test/fixtures/cliiiii')
  *
  */
-const expect = require('chai').expect;
-const path = require('path');
-const Runner = require('../../../src/index').Runner;
+import chai from 'chai';
+import path from 'path';
+import { Runner } from '../../../src/index.js';
+
+const expect = chai.expect;
 
 describe('CLI Error Handling', function() {
 
@@ -22,7 +24,7 @@ describe('CLI Error Handling', function() {
 
       try {
         const runner = new Runner();
-        
+
         await runner.runCommand(binPath);
       } catch (err) {
         expect(err).to.equal(`Error: Cannot find path ${binPath}`);
