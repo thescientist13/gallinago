@@ -1,6 +1,6 @@
 {
   "name": "gallinago",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Gallinago is a NodeJS based package designed to help with the running and testing of CLIs.",
   "main": "src/index.js",
   "type": "module",
