@@ -8,7 +8,7 @@
 
 ![gallinago](./.github/assets/gallinago.jpg)
 
-## Overview 
+## Overview
 Often times while creating CLIs, it can be helpful to test the final output given the various configurations of the CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
 - Were the right files created?
 - Was the output what I expected?
@@ -35,14 +35,16 @@ To use Gallinago, you will just need two things
 1. An absolute path to the directory you want Gallinago to run your CLI in
 
 ```js
-const path = require('path');
-const Runner = require('gallinago').Runner;
+import path from 'path';
+import { Runner } = from 'gallinago';
+import { fileURLToPath, URL } from 'url';
+
 const runner = new Runner();
 
-const cliPath = path.join('/path/to/cli.js'); // required
-const buildDir = path.join(__dirname, './build'); // required
+const cliPath = fileURLToPath(new URL('./path/to/your/cli.js', import.meta.url)); // required
+const buildDir = fileURLToPath(new URL('./build', import.meta.url)); // required
 
-// this will also create the directory as well 
+// this will also create the directory as well
 await runner.setup(buildDir);
 
 // runs your CLI
@@ -61,7 +63,8 @@ await runner.teardown();
 The `Runner` constructor returns a new instance of `Runner`.
 
 ```js
-const Runner = require('gallinago').Runner;
+import { Runner } from 'gallinago';
+
 const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 

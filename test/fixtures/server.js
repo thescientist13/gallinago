@@ -1,5 +1,6 @@
-const Koa = require('koa');
-const livereload = require('livereload');
+import Koa from 'koa';
+import livereload from 'livereload';
+import { fileURLToPath, URL } from 'url';
 
 const app = new Koa();
 const port = 8080;
@@ -14,9 +15,10 @@ app.use(async ctx => {
 
 app.listen(port, async () => {
   console.debug(`server started on port ${port}`);
+  const dirname = fileURLToPath(new URL('.', import.meta.url));
 
-  await liveReloadServer.watch(__dirname, () => {
-    console.info(`Now live watching directory "${__dirname}" for changes.`);
+  await liveReloadServer.watch(dirname, () => {
+    console.info(`Now live watching directory "${dirname}" for changes.`);
     return Promise.resolve(true);
   });
 });

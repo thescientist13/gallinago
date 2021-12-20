@@ -1,7 +1,7 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { spawn } = require('child_process');
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { spawn } from 'child_process';
 
 class Runner {
   constructor(enableStdOut = false) {
@@ -110,4 +110,6 @@ class Runner {
   }
 }
 
-module.exports = Runner;
+export {
+  Runner
+};
