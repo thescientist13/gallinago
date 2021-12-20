@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-const Runner = require('./lib/runner');
+import { Runner } from './lib/runner.js';
 
-module.exports = {
+export {
   Runner
 };
