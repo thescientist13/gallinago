@@ -37,6 +37,16 @@ class Runner {
   }
 
   runCommand(binPath, args = '') {
+    // console.debug('##### ', { args });
+    // console.debug('##### ', process.execArgv);
+    // const arrrrrg = process.execArgv.map(arg => {
+    //   if (arg.indexOf('.') === 0) {
+    //     return path.join(process.cwd(), arg)
+    //   } else {
+    //     return arg;
+    //   }
+    // });
+    // console.debug({ arrrrrg });
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       let err = '';
@@ -46,7 +56,7 @@ class Runner {
       }
 
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
-      this.childProcess = spawn(runner, [cliPath, args], {
+      this.childProcess = spawn(runner, [...process.execArgv, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
         detached: true
