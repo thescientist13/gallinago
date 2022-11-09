@@ -3,7 +3,7 @@
  * Runs the CLI fixture that copies dot files from fixtures directory.  Based
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
- * Uaer Result
+ * User Result
  * Should succesfully catch the error from invalid binary path.
  *
  * runCommand

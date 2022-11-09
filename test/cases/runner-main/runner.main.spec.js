@@ -2,7 +2,7 @@
  * Use Case
  * Make the projects pacakge.main exports the right interface
  *
- * Uaer Result
+ * User Result
  * Should export the expected intertface
  *
  */
