@@ -68,6 +68,11 @@ import { Runner } from 'gallinago';
 const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 
+#### Options
+`Runner` takes two boolean flags (`true`|`false`)
+- Standard Out - pass `true` to have the Runner log to `stdout`
+- Forward Parent Args - pass `true` and any `node` flags passed to the parent process will be made available to the child process
+
 ### Runner.setup (required)
 `Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
 
