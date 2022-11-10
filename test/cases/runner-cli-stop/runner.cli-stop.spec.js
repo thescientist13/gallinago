@@ -4,7 +4,7 @@
  * - the initial process will not close on its own
  * - any processes that it spawns wont be closed when killing the main process
  *
- * Uaer Result
+ * User Result
  * Should run cli.js runCommand successfully with stop function called
  * and correctly shuts down a live server
  *
