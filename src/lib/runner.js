@@ -4,8 +4,9 @@ import path from 'path';
 import { spawn } from 'child_process';
 
 class Runner {
-  constructor(enableStdOut = false) {
+  constructor(enableStdOut = false, forwardParentArgs = false) {
     this.enableStdOut = enableStdOut; // debugging tests
+    this.forwardParentArgs = forwardParentArgs;
     this.setupFiles = [];
     this.childProcess = null;
   }
@@ -39,6 +40,7 @@ class Runner {
   runCommand(binPath, args = '') {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
+      const finalArgs = this.forwardParentArgs ? process.execArgv : [];
       let err = '';
 
       if (!fs.existsSync(binPath)) {
@@ -46,7 +48,7 @@ class Runner {
       }
 
       const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
-      this.childProcess = spawn(runner, [cliPath, args], {
+      this.childProcess = spawn(runner, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
         detached: true
