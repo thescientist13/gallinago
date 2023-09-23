@@ -47,11 +47,12 @@ class Runner {
         reject(`Error: Cannot find path ${binPath}`);
       }
 
-      const runner = os.platform() === 'win32' ? 'node.cmd' : 'node';
+      const isWindows = os.platform() === 'win32';
+      const runner = isWindows ? 'node.cmd' : 'node';
       this.childProcess = spawn(runner, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
-        detached: true
+        detached: !isWindows
       });
 
       this.childProcess.on('close', code => {
