@@ -25,13 +25,13 @@ describe('Forward Parent Args', function() {
   let runner;
 
   describe('default options with Forward Parent Args set to true', function() {
-    before(async function() {
+    before(function() {
       runner = new Runner(true, true);
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath);
+      runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath
       );
     });

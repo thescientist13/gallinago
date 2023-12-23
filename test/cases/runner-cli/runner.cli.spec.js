@@ -28,13 +28,13 @@ describe('CLI Fixture', function() {
   let runner;
 
   describe('default options with relative path', function() {
-    before(async function() {
+    before(function() {
       runner = new Runner();
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath);
+      runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -72,13 +72,13 @@ describe('CLI Fixture', function() {
   });
 
   describe('setup with setupFiles', function() {
-    before(async function() {
+    before(function() {
       runner = new Runner();
     });
 
-    before(async function() {
-      await runner.setup(outputPath, setupFiles);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath, setupFiles);
+      runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );

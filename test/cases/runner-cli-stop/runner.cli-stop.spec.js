@@ -30,15 +30,15 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner = new Runner(true);
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
+    before(function() {
+      runner.setup(outputPath);
 
       return new Promise(async (resolve) => {
         setTimeout(() => {
           resolve();
         }, 5000);
 
-        await runner.runCommand(
+        runner.runCommand(
           `${fixturesPath}/server.js`,
           '',
           { async: true }
