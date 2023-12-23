@@ -1,4 +1,5 @@
 # gallinago
+
 [![GitHub release](https://img.shields.io/github/tag/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/tags)
 ![GitHub Actions status](https://github.com/thescientist13/gallinago/workflows/Master%20Integration/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
@@ -9,6 +10,7 @@
 ![gallinago](./.github/assets/gallinago.jpg)
 
 ## Overview
+
 Often times while creating CLIs, it can be helpful to test the final output given the various configurations of the CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
 - Were the right files created?
 - Was the output what I expected?
@@ -19,17 +21,14 @@ Often times while creating CLIs, it can be helpful to test the final output give
 
 
 ## Install
-Use npm or Yarn (1.x) to install Gallinago as a (dev) dependency.
-```sh
-# npm
-$ npm install gallinago --dev
 
-# yarn
-$ yarn add gallinago --dev
+Use npm or your favorite package manager to install Gallinago as a (dev) dependency.
+```sh
+$ npm install gallinago --dev
 ```
 
-
 ## Usage
+
 To use Gallinago, you will just need two things
 1. An absolute path to your CLI
 1. An absolute path to the directory you want Gallinago to run your CLI in
@@ -62,6 +61,7 @@ You can optionally `await` these methods as well, depending on your needs.
 ## API
 
 ### Runner
+
 The `Runner` constructor returns a new instance of `Runner`.
 
 ```js
@@ -71,6 +71,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 
 #### Options
+
 `Runner` takes two boolean flags (`true`|`false`)
 - Standard Out - pass `true` to have the Runner log to `stdout`
 - Forward Parent Args - pass `true` and any `node` flags passed to the parent process will be made available to the child process
@@ -95,6 +96,7 @@ runner.setup(__dirname, [{
 ```
 
 ### Runner.runCommand
+
 `Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
@@ -118,6 +120,7 @@ runner.runCommand(
 - `async` - By default `runCommand` runs synchronously using Node's `spawnSync`, which will block until the command completes  With `async: true`, this will now use `spawn`, which is a better for use cases like starting a web server where you _don't_ want to block the event loop.
 
 ### Runner.teardown
+
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
@@ -136,6 +139,7 @@ runner.teardown([
 ```
 
 ### Runner.stopCommand
+
 In certain circumstances, the command (process) you are running may do a couple things:
 - Spawn its own child process(es), [which is independent of the lifecycle of its parent process](https://azimi.me/2014/12/31/kill-child_process-node-js.html)
 - Not close itself (and thus never [`resolve()` the `on.close` event callback](https://github.com/thescientist13/gallinago/blob/0.3.0/src/lib/runner.js#L67))
