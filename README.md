@@ -19,17 +19,16 @@ Often times while creating CLIs, it can be helpful to test the final output give
 
 
 ## Install
-Use npm or Yarn (1.x) to install Gallinago as a (dev) dependency.
+
+Use npm or your favorite package manager to install Gallinago as a (dev) dependency.
 ```sh
 # npm
 $ npm install gallinago --dev
-
-# yarn
-$ yarn add gallinago --dev
 ```
 
 
 ## Usage
+
 To use Gallinago, you will just need two things
 1. An absolute path to your CLI
 1. An absolute path to the directory you want Gallinago to run your CLI in
@@ -60,6 +59,7 @@ await runner.teardown();
 ## API
 
 ### Runner
+
 The `Runner` constructor returns a new instance of `Runner`.
 
 ```js
@@ -69,6 +69,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 ```
 
 #### Options
+
 `Runner` takes two boolean flags (`true`|`false`)
 - Standard Out - pass `true` to have the Runner log to `stdout`
 - Forward Parent Args - pass `true` and any `node` flags passed to the parent process will be made available to the child process
@@ -93,6 +94,7 @@ await runner.setup(__dirname, [{
 ```
 
 ### Runner.runCommand
+
 `Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
@@ -103,6 +105,7 @@ await runner.runCommand(
 ```
 
 ### Runner.teardown
+
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
@@ -121,6 +124,7 @@ await runner.teardown([
 ```
 
 ### Runner.stopCommand
+
 In certain circumstances, the command (process) you are running may do a couple things:
 - Spawn its own child process(es), [which is independent of the lifecycle of its parent process](https://azimi.me/2014/12/31/kill-child_process-node-js.html)
 - Not close itself (and thus never [`resolve()` the `on.close` event callback](https://github.com/thescientist13/gallinago/blob/0.3.0/src/lib/runner.js#L67))
