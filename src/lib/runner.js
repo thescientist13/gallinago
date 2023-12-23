@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 
 class Runner {
   constructor(enableStdOut = false, forwardParentArgs = false) {
@@ -37,10 +37,11 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args = '') {
+  runCommand(binPath, args = '', options = { async: true }) {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       const finalArgs = this.forwardParentArgs ? process.execArgv : [];
+      const spawnAction = options.async ? spawn : spawnSync;
       let err = '';
 
       if (!fs.existsSync(binPath)) {
@@ -49,7 +50,7 @@ class Runner {
 
       const isWindows = os.platform() === 'win32';
       const runner = isWindows ? 'node.cmd' : 'node';
-      this.childProcess = spawn(runner, [...finalArgs, cliPath, args], {
+      this.childProcess = spawnAction(runner, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
         detached: !isWindows

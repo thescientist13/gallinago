@@ -39,7 +39,9 @@ describe('Server Fixture for Manual Process Stop', function() {
         }, 5000);
 
         await runner.runCommand(
-          `${fixturesPath}/server.js`
+          `${fixturesPath}/server.js`,
+          '',
+          { async: true }
         );
       });
     });
