@@ -103,7 +103,7 @@ await runner.runCommand(
 ```
 
 #### Options
-`runCommand` additionally takes an options object as the third param.  With it you can further customize the runner
+`runCommand` additionally takes an options object as the third param.  With it you can further customize the runner:
 
 ```js
 await runner.runCommand(
@@ -113,7 +113,7 @@ await runner.runCommand(
 );
 ```
 
-- `async` - By default `runCommand` runs synchronously using Node's `spawnSync`.  With `async: true`, this will now use `spawn`, which is a better for use cases if running an asynchronous operation, like starting a web server where you _don't_ want to block the event loop.
+- `async` - By default `runCommand` runs synchronously using Node's `spawnSync`, which will block until the command completes  With `async: true`, this will now use `spawn`, which is a better for use cases like starting a web server where you _don't_ want to block the event loop.
 
 ### Runner.teardown
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
