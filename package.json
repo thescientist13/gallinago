@@ -26,17 +26,17 @@
   },
   "scripts": {
     "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
-    "test": "node --debug-port 3333 ./node_modules/mocha/bin/mocha",
+    "test": "c8 node --debug-port 3333 ./node_modules/mocha/bin/mocha",
     "test:tdd": "npm test -- --watch"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0",
-    "c8": "^7.10.0",
-    "chai": "^4.2.0",
+    "c8": "^7.14.0",
+    "chai": "^4.3.10",
     "eslint": "^8.4.0",
     "fs-extra": "^9.0.1",
     "koa": "^2.13.1",
     "livereload": "^0.9.3",
-    "mocha": "^8.2.0"
+    "mocha": "^8.4.0"
   }
 }
