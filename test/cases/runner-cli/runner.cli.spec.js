@@ -28,13 +28,13 @@ describe('CLI Fixture', function() {
   let runner;
 
   describe('default options with relative path', function() {
-    before(async function() {
+    before(function() {
       runner = new Runner();
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath);
+      runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -64,21 +64,21 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
 
-    it('should delete the output directory when told', async function() {
-      await runner.teardown([outputPath]);
+    it('should delete the output directory when told', function() {
+      runner.teardown([outputPath]);
 
       expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
   });
 
   describe('setup with setupFiles', function() {
-    before(async function() {
+    before(function() {
       runner = new Runner();
     });
 
-    before(async function() {
-      await runner.setup(outputPath, setupFiles);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath, setupFiles);
+      runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -112,15 +112,15 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/webcomponents-bundle.js`)).to.be.equal(true);
     });
 
-    it('should delete the setup file we provided', async function() {
+    it('should delete the setup file we provided', function() {
       const setupFile = path.join(outputPath, 'webcomponents-bundle.js');
-      await runner.teardown();
+      runner.teardown();
 
       expect(fs.existsSync(setupFile)).to.be.equal(false);
       expect(fs.existsSync(outputPath)).to.be.equal(true);
 
       // cleanup everything
-      await runner.teardown([outputPath]);
+      runner.teardown([outputPath]);
       expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
   });

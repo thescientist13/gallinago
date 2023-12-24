@@ -7,7 +7,7 @@
  *
  * runCommand
  * 
- * runner = new Runner(true, true);
+ * runner = new Runner(false, true);
  * runCommand('cli.js')
  *
  */
@@ -25,13 +25,13 @@ describe('Forward Parent Args', function() {
   let runner;
 
   describe('default options with Forward Parent Args set to true', function() {
-    before(async function() {
-      runner = new Runner(true, true);
+    before(function() {
+      runner = new Runner(false, true);
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath);
+      runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath
       );
     });
@@ -54,8 +54,8 @@ describe('Forward Parent Args', function() {
       expect(contents).to.be.equal('--debug-port=3333');
     });
 
-    after(async function() {
-      await runner.teardown([
+    after(function() {
+      runner.teardown([
         path.join(outputPath, 'args.txt')
       ]);
     });

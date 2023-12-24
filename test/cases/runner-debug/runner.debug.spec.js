@@ -23,14 +23,14 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
   let runner;
 
-  before(async function() {
+  before(function() {
     runner = new Runner();
   });
 
   describe('default options with relative path', function() {
-    before(async function() {
-      await runner.setup(outputPath);
-      await runner.runCommand(
+    before(function() {
+      runner.setup(outputPath);
+      runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -61,7 +61,7 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     });
   });
 
-  after(async function() {
-    await runner.teardown();
+  after(function() {
+    runner.teardown();
   });
 });

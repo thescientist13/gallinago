@@ -27,19 +27,21 @@ describe('Server Fixture for Manual Process Stop', function() {
 
   describe('default behavior using runner.stopCommand', function() {
     before(function() {
-      runner = new Runner(true);
+      runner = new Runner();
     });
 
-    before(async function() {
-      await runner.setup(outputPath);
+    before(function() {
+      runner.setup(outputPath);
 
-      return new Promise(async (resolve) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
         }, 5000);
 
-        await runner.runCommand(
-          `${fixturesPath}/server.js`
+        runner.runCommand(
+          `${fixturesPath}/server.js`,
+          '',
+          { async: true }
         );
       });
     });
@@ -58,7 +60,7 @@ describe('Server Fixture for Manual Process Stop', function() {
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
     before(function() {
-      runner = new Runner(true);
+      runner = new Runner();
     });
 
     it('should run without issue', function(done) {
