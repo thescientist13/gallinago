@@ -30,7 +30,7 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner = new Runner();
     });
 
-    before(function() {
+    before(async function() {
       runner.setup(outputPath);
 
       return new Promise((resolve) => {
