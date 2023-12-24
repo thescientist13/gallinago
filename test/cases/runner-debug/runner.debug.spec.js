@@ -21,14 +21,12 @@ const expect = chai.expect;
 describe('CLI Fixture w/debug (stdOut) enabled', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
-  let runner;
-
-  before(function() {
-    runner = new Runner();
-  });
 
   describe('default options with relative path', function() {
+    let runner;
+
     before(function() {
+      runner = new Runner();
       runner.setup(outputPath);
       runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
@@ -59,9 +57,9 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     it('should have .mocharc file', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
-  });
 
-  after(function() {
-    runner.teardown();
+    after(function() {
+      runner.teardown();
+    });
   });
 });

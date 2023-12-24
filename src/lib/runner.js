@@ -39,6 +39,8 @@ class Runner {
 
   runCommand(binPath, args = '', options = {}) {
     return new Promise((resolve, reject) => {
+      const executable = 'node';
+      const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
       const finalArgs = this.forwardParentArgs ? process.execArgv : [];
       const spawnAction = options.async ? spawn : spawnSync;
@@ -48,9 +50,7 @@ class Runner {
         reject(`Error: Cannot find path ${binPath}`);
       }
 
-      const isWindows = os.platform() === 'win32';
-      const runner = 'node';
-      this.childProcess = spawnAction(runner, [...finalArgs, cliPath, args], {
+      this.childProcess = spawnAction(executable, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
         detached: !isWindows

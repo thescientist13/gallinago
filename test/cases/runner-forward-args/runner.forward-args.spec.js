@@ -22,14 +22,12 @@ const expect = chai.expect;
 describe('Forward Parent Args', function() {
   const currentPath = fileURLToPath(new URL('.', import.meta.url));
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
-  let runner;
 
   describe('default options with Forward Parent Args set to true', function() {
-    before(function() {
-      runner = new Runner(false, true);
-    });
+    let runner;
 
     before(function() {
+      runner = new Runner(false, true);
       runner.setup(outputPath);
       runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath
