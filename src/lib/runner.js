@@ -81,13 +81,12 @@ class Runner {
   }
 
   stopCommand() {
-    if (this.childProcess) {
-      if (os.platform() === 'win32') {
-        spawn('taskkill', ['/pid', this.childProcess.pid, '/t', '/f']);
-      } else {
-        process.kill(-this.childProcess.pid, 'SIGKILL');
+    return new Promise((resolve) => {
+      if (this.childProcess) {
+        this.childProcess.kill();
+        resolve();
       }
-    }
+    });
   }
 
   teardown(additionalFiles = []) {
