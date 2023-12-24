@@ -4,7 +4,7 @@ import path from 'path';
 import { spawn, spawnSync } from 'child_process';
 
 class Runner {
-  constructor(enableStdOut = false, forwardParentArgs = false) {
+  constructor(enableStdOut = true, forwardParentArgs = false) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.forwardParentArgs = forwardParentArgs;
     this.setupFiles = [];
