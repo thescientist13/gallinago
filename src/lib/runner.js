@@ -52,7 +52,7 @@ class Runner {
       const runner = isWindows ? 'node.exe' : 'node';
       this.childProcess = spawnAction(runner, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
-        shell: isWindows,
+        shell: true,
         detached: !isWindows
       });
 
