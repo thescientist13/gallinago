@@ -36,7 +36,7 @@ describe('Server Fixture for Manual Process Stop', function() {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve();
-        }, 5000);
+        }, 10000);
 
         runner.runCommand(
           `${fixturesPath}/server.js`,
