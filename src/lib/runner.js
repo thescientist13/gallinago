@@ -49,7 +49,7 @@ class Runner {
       }
 
       const isWindows = os.platform() === 'win32';
-      const runner = isWindows ? 'node.exe' : 'node';
+      const runner = 'node';
       this.childProcess = spawnAction(runner, [...finalArgs, cliPath, args], {
         cwd: this.rootDir,
         shell: false,
