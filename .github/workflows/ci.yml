@@ -12,20 +12,20 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-latest
-        node: [14, 16]
+        node: [18]
 
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node }}
     - name: Installing project dependencies
       run: |
-        yarn install --frozen-lockfile
+        npm ci
     - name: Lint
       run: |
-        yarn lint
+        npm run lint
     - name: Test
       run: |
-        yarn test
+        npm test

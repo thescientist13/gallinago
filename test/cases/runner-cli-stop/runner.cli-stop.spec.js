@@ -23,14 +23,12 @@ const expect = chai.expect;
 describe('Server Fixture for Manual Process Stop', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
-  let runner;
 
   describe('default behavior using runner.stopCommand', function() {
-    before(function() {
-      runner = new Runner();
-    });
+    let runner;
 
-    before(function() {
+    before(async function() {
+      runner = new Runner();
       runner.setup(outputPath);
 
       return new Promise((resolve) => {
@@ -47,7 +45,7 @@ describe('Server Fixture for Manual Process Stop', function() {
     });
 
     it('should start the server on port 8080', function(done) {
-      http.get('http://localhost:8080', function (resp) {
+      http.get('http://127.0.0.1:8080', function (resp) {
         expect(resp.statusCode).to.equal(200);
         done();
       });
@@ -59,13 +57,14 @@ describe('Server Fixture for Manual Process Stop', function() {
   });
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
+    let runner;
+
     before(function() {
       runner = new Runner();
     });
 
-    it('should run without issue', function(done) {
+    it('should run without issue', function() {
       runner.stopCommand();
-      done();
     });
   });
 

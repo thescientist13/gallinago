@@ -25,14 +25,12 @@ describe('CLI Fixture', function() {
     source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
     destination: path.join(outputPath, 'webcomponents-bundle.js')
   }];
-  let runner;
 
   describe('default options with relative path', function() {
-    before(function() {
-      runner = new Runner();
-    });
+    let runner;
 
     before(function() {
+      runner = new Runner();
       runner.setup(outputPath);
       runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
@@ -72,11 +70,10 @@ describe('CLI Fixture', function() {
   });
 
   describe('setup with setupFiles', function() {
-    before(function() {
-      runner = new Runner();
-    });
+    let runner;
 
     before(function() {
+      runner = new Runner();
       runner.setup(outputPath, setupFiles);
       runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
