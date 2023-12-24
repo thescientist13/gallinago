@@ -47,7 +47,7 @@ describe('Server Fixture for Manual Process Stop', function() {
     });
 
     it('should start the server on port 8080', function(done) {
-      http.get('http://localhost:8080', function (resp) {
+      http.get('http://127.0.0.1:8080', function (resp) {
         expect(resp.statusCode).to.equal(200);
         done();
       });

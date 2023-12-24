@@ -38,7 +38,7 @@ class Runner {
   }
 
   runCommand(binPath, args = '', options = {}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const cliPath = binPath;
       const finalArgs = this.forwardParentArgs ? process.execArgv : [];
       const spawnAction = options.async ? spawn : spawnSync;
