@@ -26,7 +26,7 @@
   },
   "scripts": {
     "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
-    "test": "mocha",
+    "test": "node --debug-port 3333 ./node_modules/mocha/bin/mocha",
     "test:tdd": "npm test -- --watch"
   },
   "devDependencies": {
