@@ -54,8 +54,8 @@ describe('Forward Parent Args', function() {
       expect(contents).to.be.equal('--debug-port=3333');
     });
 
-    after(async function() {
-      await runner.teardown([
+    after(function() {
+      runner.teardown([
         path.join(outputPath, 'args.txt')
       ]);
     });

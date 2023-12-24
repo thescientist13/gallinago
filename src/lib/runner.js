@@ -37,7 +37,7 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args = '', options = { async: false }) {
+  runCommand(binPath, args = '', options = {}) {
     return new Promise(async (resolve, reject) => {
       const cliPath = binPath;
       const finalArgs = this.forwardParentArgs ? process.execArgv : [];

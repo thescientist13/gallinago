@@ -61,7 +61,7 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     });
   });
 
-  after(async function() {
-    await runner.teardown();
+  after(function() {
+    runner.teardown();
   });
 });
