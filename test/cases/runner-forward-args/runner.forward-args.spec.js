@@ -7,7 +7,7 @@
  *
  * runCommand
  * 
- * runner = new Runner(true, true);
+ * runner = new Runner(false, true);
  * runCommand('cli.js')
  *
  */
@@ -26,7 +26,7 @@ describe('Forward Parent Args', function() {
 
   describe('default options with Forward Parent Args set to true', function() {
     before(function() {
-      runner = new Runner(true, true);
+      runner = new Runner(false, true);
     });
 
     before(function() {
