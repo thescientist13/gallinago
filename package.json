@@ -26,8 +26,8 @@
   },
   "scripts": {
     "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
-    "test": "c8 node --debug-port 3333 ./node_modules/mocha/bin/mocha",
-    "test:tdd": "yarn test --watch"
+    "test": "mocha",
+    "test:tdd": "npm test -- --watch"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0",
