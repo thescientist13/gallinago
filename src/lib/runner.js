@@ -37,20 +37,25 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args = '', options = {}) {
+  runCommand(binPath, args = null, options = {}) {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
-      const finalArgs = this.forwardParentArgs ? process.execArgv : [];
+      const forwardArgs = this.forwardParentArgs ? process.execArgv : [];
+      const finalArgs = [...forwardArgs, cliPath];
       const spawnAction = options.async ? spawn : spawnSync;
       let err = '';
+
+      if (args) {
+        finalArgs.push(args);
+      }
 
       if (!fs.existsSync(binPath)) {
         reject(`Error: Cannot find path ${binPath}`);
       }
 
-      this.childProcess = spawnAction(executable, [...finalArgs, cliPath, args], {
+      this.childProcess = spawnAction(executable, finalArgs, {
         cwd: this.rootDir,
         shell: false,
         detached: !isWindows,
