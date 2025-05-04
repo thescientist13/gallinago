@@ -11,13 +11,13 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, setupFiles = []) {
+  setup(rootDir, setupFiles = [], { create } = {}) {
     this.setupFiles = setupFiles;
 
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
 
-        if (!fs.existsSync(rootDir)) {
+        if (create) {
           fs.mkdirSync(rootDir);
         }
 
@@ -100,21 +100,22 @@ class Runner {
   teardown(additionalFiles = []) {
     return new Promise((resolve, reject) => {
       try {
-        this.setupFiles.concat(additionalFiles).forEach((file) => {
+        (this.setupFiles || []).concat(additionalFiles).forEach((file) => {
           const deletePath = file.destination
             ? file.destination
             : file;
 
           if (fs.lstatSync(deletePath).isDirectory()) {
-            fs.rmSync(deletePath, { recursive: true });
+            fs.rmdirSync(deletePath, { recursive: true });
           } else {
             fs.unlinkSync(deletePath);
           }
         });
-        this.setupFiles = [];
 
+        this.setupFiles = [];
         resolve();
       } catch (err) {
+        console.log(err);
         reject(err);
       }
     });

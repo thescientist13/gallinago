@@ -19,7 +19,7 @@ import { fileURLToPath, URL } from 'url';
 const expect = chai.expect;
 
 describe('CLI Fixture', function() {
-  const outputPath = fileURLToPath(new URL('./output', import.meta.url));
+  const outputPath = fileURLToPath(new URL('./output/', import.meta.url));
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
   const setupFiles = [{
     source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
@@ -31,7 +31,7 @@ describe('CLI Fixture', function() {
 
     before(function() {
       runner = new Runner();
-      runner.setup(outputPath);
+      runner.setup(outputPath, null, { create: true });
       runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
