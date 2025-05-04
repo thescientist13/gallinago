@@ -106,6 +106,15 @@ runner.runCommand(
 );
 ```
 
+You can also provided an array as the second param to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
+
+```js
+runner.runCommand(
+  '/path/to/cli.js',
+  ["--name", APP_NAME, "--ts", "yes", "--install", "no"]
+);
+```
+
 #### Options
 `runCommand` additionally takes an options object as the third param.  With it you can further customize the runner:
 
