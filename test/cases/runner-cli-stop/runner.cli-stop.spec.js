@@ -13,7 +13,6 @@
  *
  */
 import chai from 'chai';
-import http from 'http';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
@@ -44,11 +43,10 @@ describe('Server Fixture for Manual Process Stop', function() {
       });
     });
 
-    it('should start the server on port 8080', function(done) {
-      http.get('http://127.0.0.1:8080', function (resp) {
-        expect(resp.statusCode).to.equal(200);
-        done();
-      });
+    it('should start the server on port 8080', async function() {
+      const response = await fetch('http://127.0.0.1:8080');
+
+      expect(response.status).to.equal(200);
     });
 
     after(function() {
