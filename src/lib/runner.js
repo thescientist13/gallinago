@@ -106,7 +106,7 @@ class Runner {
             : file;
 
           if (fs.lstatSync(deletePath).isDirectory()) {
-            fs.rmdirSync(deletePath, { recursive: true });
+            fs.rmSync(deletePath, { recursive: true });
           } else {
             fs.unlinkSync(deletePath);
           }
