@@ -19,7 +19,6 @@ export default [
         requireConfigFile: false,
       },
       globals: {
-        ...globals.browser,
         ...globals.mocha,
         ...globals.chai,
         ...globals.node,
