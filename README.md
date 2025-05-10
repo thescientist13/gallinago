@@ -77,6 +77,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 - Forward Parent Args - pass `true` and any `node` flags passed to the parent process will be made available to the child process
 
 ### Runner.setup (required)
+
 `Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
 
 ```js
@@ -111,11 +112,12 @@ You can also provided an array as the second param to support forwarding individ
 ```js
 runner.runCommand(
   '/path/to/cli.js',
-  ["--name", APP_NAME, "--ts", "yes", "--install", "no"]
+  ["--name", "my-app"]
 );
 ```
 
 #### Options
+
 `runCommand` additionally takes an options object as the third param.  With it you can further customize the runner:
 
 ```js
