@@ -73,7 +73,7 @@ const run = async () => {
     console.error(err);
   }
 
-  return Promise.resolve(process.exit); // eslint-disable-line no-process-exit
+  return Promise.resolve(process.exit);
 };
 
 run();

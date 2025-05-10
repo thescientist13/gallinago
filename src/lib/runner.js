@@ -73,14 +73,14 @@ class Runner {
       this.childProcess.stderr.on('data', (data) => {
         err = data.toString('utf8');
         if (this.enableStdOut) {
-          console.error(err); // eslint-disable-line
+          console.error(err);
         }
         reject(err);
       });
 
       this.childProcess.stdout.on('data', (data) => {
         if (this.enableStdOut) {
-          console.log(data.toString('utf8')); // eslint-disable-line
+          console.log(data.toString('utf8'));
         }
       });
     });
@@ -96,7 +96,7 @@ class Runner {
   }
 
   teardown(additionalFiles = []) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
         this.setupFiles.concat(additionalFiles).forEach((file) => {
           const deletePath = file.destination
