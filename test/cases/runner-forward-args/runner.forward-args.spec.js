@@ -54,7 +54,7 @@ describe('Forward Parent Args', function() {
 
     after(function() {
       runner.teardown([
-        path.join(outputPath, 'args.txt')
+        path.join(outputPath)
       ]);
     });
   });

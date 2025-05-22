@@ -64,6 +64,12 @@ describe('Server Fixture for Manual Process Stop', function() {
     it('should run without issue', function() {
       runner.stopCommand();
     });
+
+    after(function() {
+      runner.teardown([
+        path.join(outputPath)
+      ]);
+    });
   });
 
 });
