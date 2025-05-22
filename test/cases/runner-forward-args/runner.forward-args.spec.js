@@ -28,7 +28,7 @@ describe('Forward Parent Args', function() {
 
     before(function() {
       runner = new Runner(false, true);
-      runner.setup(outputPath, null, { create: true });
+      runner.setup(outputPath);
       runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath
       );

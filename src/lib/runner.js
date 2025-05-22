@@ -11,13 +11,13 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, setupFiles = [], { create } = {}) {
+  setup(rootDir, setupFiles = [], options = { create: true }) {
     this.setupFiles = setupFiles;
 
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
 
-        if (create) {
+        if (options.create) {
           fs.mkdirSync(rootDir);
         }
 

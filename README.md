@@ -90,7 +90,7 @@ Optionally, you can provide "setup" files if you want to copy additional files i
 * `destination`: path of where to copy the file to
 
 An third options object can be provided with the following supported options
-- `create` - automatically create the directory provided in the first param
+- `create` - automatically create the directory provided in the first param (default is `true`)
 
 ```js
 runner.setup(__dirname, [{
