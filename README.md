@@ -89,11 +89,16 @@ Optionally, you can provide "setup" files if you want to copy additional files i
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
 
+An third options object can be provided with the following supported options
+- `create` - automatically create the directory provided in the first param (default is `true`)
+
 ```js
 runner.setup(__dirname, [{
   source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
   destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
-}]);
+}], {
+  create: true
+});
 ```
 
 ### Runner.runCommand

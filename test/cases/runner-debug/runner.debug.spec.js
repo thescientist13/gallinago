@@ -59,7 +59,9 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     });
 
     after(function() {
-      runner.teardown();
+      runner.teardown([
+        path.join(outputPath)
+      ]);
     });
   });
 });

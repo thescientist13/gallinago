@@ -11,17 +11,16 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, setupFiles = []) {
+  setup(rootDir, setupFiles = [], options = { create: true }) {
     this.setupFiles = setupFiles;
 
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
-
-        if (!fs.existsSync(rootDir)) {
-          fs.mkdirSync(rootDir);
-        }
-
         this.rootDir = rootDir;
+
+        if (options.create) {
+          fs.mkdirSync(this.rootDir, { recursive: true });
+        }
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
@@ -100,21 +99,24 @@ class Runner {
   teardown(additionalFiles = []) {
     return new Promise((resolve, reject) => {
       try {
-        this.setupFiles.concat(additionalFiles).forEach((file) => {
+        (this.setupFiles || []).concat(additionalFiles).forEach((file) => {
           const deletePath = file.destination
             ? file.destination
             : file;
 
-          if (fs.lstatSync(deletePath).isDirectory()) {
-            fs.rmSync(deletePath, { recursive: true });
-          } else {
-            fs.unlinkSync(deletePath);
+          if (fs.existsSync(deletePath)) {
+            if (fs.lstatSync(deletePath).isDirectory()) {
+              fs.rmSync(deletePath, { recursive: true });
+            } else {
+              fs.unlinkSync(deletePath);
+            }
           }
         });
-        this.setupFiles = [];
 
+        this.setupFiles = [];
         resolve();
       } catch (err) {
+        console.log(err);
         reject(err);
       }
     });

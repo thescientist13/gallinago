@@ -37,7 +37,7 @@ describe('Server Fixture for Manual Process Stop', function() {
 
         runner.runCommand(
           `${fixturesPath}/server.js`,
-          '',
+          null,
           { async: true }
         );
       });
@@ -63,6 +63,12 @@ describe('Server Fixture for Manual Process Stop', function() {
 
     it('should run without issue', function() {
       runner.stopCommand();
+    });
+
+    after(function() {
+      runner.teardown([
+        path.join(outputPath)
+      ]);
     });
   });
 
