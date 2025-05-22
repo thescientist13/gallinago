@@ -16,12 +16,11 @@ class Runner {
 
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
+        this.rootDir = rootDir;
 
         if (options.create) {
-          fs.mkdirSync(rootDir);
+          fs.mkdirSync(this.rootDir, { recursive: true });
         }
-
-        this.rootDir = rootDir;
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
@@ -105,10 +104,12 @@ class Runner {
             ? file.destination
             : file;
 
-          if (fs.lstatSync(deletePath).isDirectory()) {
-            fs.rmSync(deletePath, { recursive: true });
-          } else {
-            fs.unlinkSync(deletePath);
+          if (fs.existsSync(deletePath)) {
+            if (fs.lstatSync(deletePath).isDirectory()) {
+              fs.rmSync(deletePath, { recursive: true });
+            } else {
+              fs.unlinkSync(deletePath);
+            }
           }
         });
 
