@@ -37,7 +37,7 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args = null, options = {}) {
+  runCommand(binPath, args, options = {}) {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
@@ -47,7 +47,9 @@ class Runner {
       const spawnAction = options.async ? spawn : spawnSync;
       let err = '';
 
-      if (args) {
+      if (Array.isArray(args)) {
+        finalArgs.push(...args);
+      } else if (typeof args === 'string') {
         finalArgs.push(args);
       }
 
