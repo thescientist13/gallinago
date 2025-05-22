@@ -31,7 +31,7 @@ describe('CLI Fixture', function() {
 
     before(function() {
       runner = new Runner();
-      runner.setup(outputPath);
+      runner.setup(outputPath, null, { create: true });
       runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         [fixturesPath] // args
