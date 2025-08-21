@@ -26,46 +26,52 @@ describe('CLI Fixture', function() {
     destination: path.join(outputPath, 'webcomponents-bundle.js')
   }];
 
-  describe('default options with relative path', function() {
-    let runner;
+  [
+    {options: {}, label: 'default options with relative path'},
+    {options: { async: true }, label: 'default options with relative path (async)'}
+  ].forEach(({options, label}) => {
+    describe(label, function() {
+      let runner;
 
-    before(function() {
-      runner = new Runner();
-      runner.setup(outputPath);
-      runner.runCommand(
-        `${fixturesPath}/cli.js`, // binPath
-        fixturesPath // args
-      );
-    });
+      before(async function() {
+        runner = new Runner();
+        await runner.setup(outputPath);
+        await runner.runCommand(
+          `${fixturesPath}/cli.js`, // binPath
+          fixturesPath, // args
+          options
+        );
+      });
 
-    it('should have created the output folder', function() {
-      const exists = fs.existsSync(outputPath);
+      it('should have created the output folder', function() {
+        const exists = fs.existsSync(outputPath);
 
-      expect(exists).to.be.equal(true);
-    });
+        expect(exists).to.be.equal(true);
+      });
 
-    it('should only copy 3 files', function() {
-      const files = fs.readdirSync(outputPath);
+      it('should only copy 3 files', function() {
+        const files = fs.readdirSync(outputPath);
 
-      expect(files.length).to.be.equal(3);
-    });
+        expect(files.length).to.be.equal(3);
+      });
 
-    it('should have an .editorconfig file', function() {
-      expect(fs.existsSync(`${outputPath}/.editorconfig`)).to.be.equal(true);
-    });
+      it('should have an .editorconfig file', function() {
+        expect(fs.existsSync(`${outputPath}/.editorconfig`)).to.be.equal(true);
+      });
 
-    it('should have an .eslintrc file', function() {
-      expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
-    });
+      it('should have an .eslintrc file', function() {
+        expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
+      });
 
-    it('should have .mocharc file', function() {
-      expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
-    });
+      it('should have .mocharc file', function() {
+        expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
+      });
 
-    it('should delete the output directory when told', function() {
-      runner.teardown([outputPath]);
+      it('should delete the output directory when told', function() {
+        runner.teardown([outputPath]);
 
-      expect(fs.existsSync(outputPath)).to.be.equal(false);
+        expect(fs.existsSync(outputPath)).to.be.equal(false);
+      });
     });
   });
 
