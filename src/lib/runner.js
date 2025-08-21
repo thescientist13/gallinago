@@ -63,27 +63,41 @@ class Runner {
         stdio: this.enableStdOut ? 'inherit' : null
       });
 
-      this.childProcess.on('close', code => {
-        if (err !== '' && code && code !== 0) {
+      if (options.async) {
+        this.childProcess.on('close', (code) => {
+          if (err !== '' && code && code !== 0) {
+            reject(err);
+            return;
+          }
+          resolve();
+        });
+
+        this.childProcess.stderr.on('data', (data) => {
+          err = data.toString('utf8');
+          if (this.enableStdOut) {
+            console.error(err);
+          }
           reject(err);
+        });
+
+        this.childProcess.stdout.on('data', (data) => {
+          if (this.enableStdOut) {
+            console.log(data.toString('utf8'));
+          }
+        });
+      } else {
+        if (this.childProcess.stdout && this.enableStdOut) {
+          console.log(this.childProcess.stdout.toString('utf8'));
+        }
+        if (this.childProcess.stderr && this.enableStdOut) {
+          console.error(this.childProcess.stderr.toString('utf8'));
+        }
+        if (this.childProcess.status !== 0) {
+          reject(this.childProcess.error);
           return;
         }
         resolve();
-      });
-
-      this.childProcess.stderr.on('data', (data) => {
-        err = data.toString('utf8');
-        if (this.enableStdOut) {
-          console.error(err);
-        }
-        reject(err);
-      });
-
-      this.childProcess.stdout.on('data', (data) => {
-        if (this.enableStdOut) {
-          console.log(data.toString('utf8'));
-        }
-      });
+      }
     });
   }
 
