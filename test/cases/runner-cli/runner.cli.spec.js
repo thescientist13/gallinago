@@ -26,10 +26,13 @@ describe('CLI Fixture', function() {
     destination: path.join(outputPath, 'webcomponents-bundle.js')
   }];
 
-  [
-    {options: {}, label: 'default options with relative path'},
-    {options: { async: true }, label: 'default options with relative path (async)'}
-  ].forEach(({options, label}) => {
+  for (
+    const {options, label} of 
+    [
+      {options: {}, label: 'default options with relative path'},
+      {options: { async: true }, label: 'default options with relative path (async)'}
+    ]
+  ) {
     describe(label, function() {
       let runner;
 
@@ -73,7 +76,7 @@ describe('CLI Fixture', function() {
         expect(fs.existsSync(outputPath)).to.be.equal(false);
       });
     });
-  });
+  }
 
   describe('setup with setupFiles', function() {
     let runner;
