@@ -44,7 +44,9 @@ describe('CLI Error Handling', function() {
       const runner = new Runner();
       await expect(
         runner.runCommand(
-          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js')
+          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
+          null,
+          { async: true }
         )
       ).to.be.rejectedWith(
         'Error: Child process throwing a Promise.reject to the parent.'
