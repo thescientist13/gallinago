@@ -91,8 +91,8 @@ class Runner {
     return new Promise((resolve) => {
       if (this.childProcess) {
         this.childProcess.kill();
-        resolve();
       }
+      resolve();
     });
   }
 
