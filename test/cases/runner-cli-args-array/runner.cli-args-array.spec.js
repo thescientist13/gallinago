@@ -29,10 +29,10 @@ describe('CLI Fixture', function() {
   describe('default options with relative path with args passed as an array', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath);
-      runner.runCommand(
+      await runner.setup(outputPath);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         [fixturesPath] // args
       );
@@ -72,10 +72,10 @@ describe('CLI Fixture', function() {
   describe('setup with setupFiles', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath, setupFiles);
-      runner.runCommand(
+      await runner.setup(outputPath, setupFiles);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );

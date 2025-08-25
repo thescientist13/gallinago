@@ -72,10 +72,10 @@ describe('CLI Fixture', function() {
   describe('setup with setupFiles', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath, setupFiles);
-      runner.runCommand(
+      await runner.setup(outputPath, setupFiles);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -169,10 +169,10 @@ describe('CLI Fixture', function() {
   describe('setup with setupFiles', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath, setupFiles);
-      runner.runCommand(
+      await runner.setup(outputPath, setupFiles);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
