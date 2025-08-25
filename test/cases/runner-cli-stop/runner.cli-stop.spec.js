@@ -61,8 +61,8 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner = new Runner();
     });
 
-    it('should run without issue', function() {
-      runner.stopCommand();
+    it('should run without issue', async function() {
+      await runner.stopCommand();
     });
 
     after(function() {
