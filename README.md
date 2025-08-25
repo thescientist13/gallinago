@@ -43,17 +43,15 @@ const cliPath = fileURLToPath(new URL('./path/to/your/cli.js', import.meta.url))
 const buildDir = fileURLToPath(new URL('./build', import.meta.url)); // required
 
 // this will also create the directory as well
-runner.setup(buildDir);
+await runner.setup(buildDir);
 
 // runs your CLI
 // use the second param to pass any args
-runner.runCommand(cliPath);
+await runner.runCommand(cliPath);
 
 // teardown buildDir
-runner.teardown();
+await runner.teardown();
 ```
-
-You can optionally `await` these methods as well, depending on your needs.
 
 > _See [our tests](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli/runner.cli.spec.js) to see **Gallinago** in action!_
 
@@ -80,7 +78,7 @@ const runner = new Runner();  // pass true to the constructor to enable stdout
 `Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
 
 ```js
-runner.setup(__dirname);
+await runner.setup(__dirname);
 ```
 
 Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide these files as an array of objects.
@@ -92,7 +90,7 @@ An third options object can be provided with the following supported options
 - `create` - automatically create the directory provided in the first param (default is `true`)
 
 ```js
-runner.setup(__dirname, [{
+await runner.setup(__dirname, [{
   source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
   destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
 }], {
@@ -105,7 +103,7 @@ runner.setup(__dirname, [{
 `Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
 
 ```js
-runner.runCommand(
+await runner.runCommand(
   '/path/to/cli.js',
   '--version'
 );
@@ -114,7 +112,7 @@ runner.runCommand(
 You can also provided an array as the second param to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
 
 ```js
-runner.runCommand(
+await runner.runCommand(
   '/path/to/cli.js',
   ["--name", "my-app"]
 );
@@ -125,7 +123,7 @@ runner.runCommand(
 `runCommand` additionally takes an options object as the third param.  With it you can further customize the runner:
 
 ```js
-runner.runCommand(
+await runner.runCommand(
   '/path/to/cli.js',
   '--version',
   { async: true }
@@ -139,12 +137,12 @@ runner.runCommand(
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
 
 ```js
-runner.teardown();
+await runner.teardown();
 ```
 
 You can pass additional files or directories to `teardown` to have **gallinago** delete those too.
 ```js
-runner.teardown([
+await runner.teardown([
   path.join(__dirname, 'build'),
   path.join(__dirname, 'fixtures'),
   .
@@ -163,9 +161,8 @@ In certain circumstances, the command (process) you are running may do a couple 
 
 To support this in Gallinago, you can use `Runner.stopCommand` to kill any and all processes associated with your `runCommand`.
 
-
 ```js
-runner.stopCommand();
+await runner.stopCommand();
 ```
 
 > _**Note**: When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process and still advance the parent Mocha process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example._
