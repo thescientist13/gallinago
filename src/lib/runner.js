@@ -58,8 +58,7 @@ class Runner {
       this.childProcess = spawn(executable, finalArgs, {
         cwd: this.rootDir,
         shell: false,
-        detached: !isWindows,
-        stdio: this.enableStdOut ? 'inherit' : null
+        detached: !isWindows
       });
 
       this.childProcess.on('close', code => {
