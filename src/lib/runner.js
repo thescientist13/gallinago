@@ -103,6 +103,14 @@ class Runner {
     });
   }
 
+  getStdOut() {
+    return this.#stdOutBuffer;
+  }
+
+  getStdErr() {
+    return this.#stdErrBuffer;
+  }
+
   onStdOut(callback, options = { replay: true }) {
     if (options.replay && this.#stdOutBuffer.length > 0) {
       callback(this.#stdOutBuffer);
