@@ -76,7 +76,6 @@ class Runner {
         if (this.enableStdOut) {
           console.error(err);
         }
-        reject(err);
       });
 
       this.childProcess.stdout.on('data', (data) => {
