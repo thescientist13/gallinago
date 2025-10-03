@@ -26,6 +26,8 @@ class Runner {
   }
 
   async setup(rootDir, setupFiles = null, options = { create: true }) {
+    setupFiles ??= [];
+
     this.#setRootDir(rootDir);
     this.#setSetupFiles(setupFiles);
 
@@ -41,7 +43,7 @@ class Runner {
       }
     }
 
-    for (const file of setupFiles ?? []) {
+    for (const file of setupFiles) {
       await fs.mkdir(path.dirname(file.destination), { recursive: true });
       await fs.copyFile(file.source, file.destination);
     }
@@ -176,8 +178,6 @@ class Runner {
   }
 
   #setSetupFiles(setupFiles) {
-    setupFiles ??= [];
-
     if (
       !Array.isArray(setupFiles) ||
       !setupFiles.every((file) => 'source' in file && 'destination' in file)
