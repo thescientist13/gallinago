@@ -28,18 +28,17 @@ describe('Server Fixture for Manual Process Stop', function() {
 
     before(async function() {
       runner = new Runner();
-      runner.setup(outputPath);
+      await runner.setup(outputPath);
+      await runner.runCommand(`${fixturesPath}/server.js`, null, {
+        background: true,
+      });
 
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
-
-        runner.runCommand(
-          `${fixturesPath}/server.js`,
-          null,
-          { async: true }
-        );
+      await new Promise((resolve) => {
+        runner.onStdOut((message) => {
+          if (message.includes('server started on port 8080')) {
+            resolve();
+          }
+        });
       });
     });
 
@@ -65,11 +64,8 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner.stopCommand();
     });
 
-    after(function() {
-      runner.teardown([
-        path.join(outputPath)
-      ]);
+    after(async function() {
+      await runner.teardown([path.join(outputPath)]);
     });
   });
-
 });

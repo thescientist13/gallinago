@@ -25,10 +25,10 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
   describe('default options with relative path', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath);
-      runner.runCommand(
+      await runner.setup(outputPath);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -58,10 +58,8 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
 
-    after(function() {
-      runner.teardown([
-        path.join(outputPath)
-      ]);
+    after(async function() {
+      await runner.teardown([path.join(outputPath)]);
     });
   });
 });

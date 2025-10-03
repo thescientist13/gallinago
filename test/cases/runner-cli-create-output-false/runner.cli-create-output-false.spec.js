@@ -23,9 +23,9 @@ describe('CLI Fixture', function() {
   describe('default options with relative path that should not create the output dir', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath, null, { create: false });
+      await runner.setup(outputPath, null, { create: false });
     });
 
     it('should have created the output folder', function() {
