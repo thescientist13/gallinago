@@ -49,6 +49,10 @@ describe('CLI Error Handling', function() {
           { async: true }
         )
       ).to.be.rejectedWith(
+        'Error: Child process exited with error code 1.'
+      );
+
+      expect(runner.getStdErr()).to.include(
         'Error: Child process throwing a Promise.reject to the parent.'
       );
     });
