@@ -10,48 +10,46 @@
  * runCommand('test/fixtures/cliiiii')
  *
  */
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
-
-chai.use(chaiAsPromised);
-const expect = chai.expect;
+import assert from 'node:assert/strict';
 
 describe('CLI Error Handling', function() {
-
   describe('default options with incorrect binary path', function() {
     it('should throw an error that module cannot be found', async function() {
       const binPath = 'test/fixtures/cliiiiii.js';
       const runner = new Runner();
-      await expect(runner.runCommand(binPath)).to.be.rejectedWith(
-        `Error: Cannot find path ${binPath}`
-      );
+      await assert.rejects(runner.runCommand(binPath), {
+        message: `Error: Cannot find path ${binPath}`,
+      });
     });
   });
 
   describe('default options with relative path for rootDir', function() {
     it('should throw an error that rootDir is not absolute', async function() {
       const runner = new Runner();
-      await expect(
-        runner.setup('../../test/fixtures/cli.js')
-      ).to.be.rejectedWith('Error: rootDir is not an absolute path');
+      await assert.rejects(runner.setup('../../test/fixtures/cli.js'), {
+        message: 'Error: rootDir is not an absolute path',
+      });
     });
   });
 
   describe('handling (and bubbling) an exception from the child process', function() {
     it('should throw an error that this is child throwing (a Promise.reject)', async function() {
       const runner = new Runner();
-      await expect(
+      await assert.rejects(
         runner.runCommand(
-          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
-          null,
-          { async: true }
-        )
-      ).to.be.rejectedWith(
-        'Error: Child process throwing a Promise.reject to the parent.'
+          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js')
+        ),
+        {
+          message: 'Error: Child process exited with error code 1.',
+        }
+      );
+
+      assert.match(
+        runner.getStdErr(),
+        /Error: Child process throwing a Promise.reject to the parent./
       );
     });
   });
-
 });
