@@ -90,6 +90,8 @@ class Runner {
       if (this.childProcess) {
         this.childProcess.kill();
         resolve();
+      } else {
+        resolve()
       }
     });
   }
