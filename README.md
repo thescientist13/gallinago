@@ -2,6 +2,7 @@
 
 [![GitHub release](https://img.shields.io/github/tag/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/tags)
 [![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
+[![NodeJS compatibility](https://img.shields.io/node/v/gallinago.svg)](https://nodejs.org/en/about/previous-releases)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thescientist13/gallinago/master/LICENSE.md)
 
 [**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is designed to assist with the running and testing of NodeJS CLIs and binaries in a simple and controlled way.  It is best used in combination with fixtures and pre-scaffolded directories such that you can reproduce the various configuration and folder structures your CLI may need to support for its users and then validate the output.  Perfect for testing!
@@ -10,7 +11,7 @@
 
 ## Overview
 
-Often times while creating CLIs, it can be helpful to test the final output given the various configurations of the CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to verify that output to validate things like:
+Often times while creating CLIs, it can be helpful to test the final output given the various configurations of a CLI.  Running a CLI using config files and user files will all likely (and hopefully) result in idempotent output that can be validated over and over.  With a testing framework like [**mocha**](https://mochajs.org/), you could use Gallinago to run your CLI and verify that output to validate things like:
 - Were the right files created?
 - Was the output what I expected?
 - Were _too_ many files created?
@@ -85,7 +86,7 @@ Optionally, you can provide "setup" files if you want to copy additional files i
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
 
-An third options object can be provided with the following supported options
+A third options object can be provided with the following supported options
 - `create` - automatically create the directory provided in the first param (default is `true`)
 
 ```js
@@ -108,7 +109,7 @@ await runner.runCommand(
 );
 ```
 
-You can also provided an array as the second param to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
+You can also provide an array as the second param to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
 
 ```js
 await runner.runCommand(
