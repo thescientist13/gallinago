@@ -26,10 +26,10 @@ describe('Forward Parent Args', function() {
   describe('default options with Forward Parent Args set to true', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner(false, true);
-      runner.setup(outputPath);
-      runner.runCommand(
+      await runner.setup(outputPath);
+      await runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath
       );
     });
@@ -52,8 +52,8 @@ describe('Forward Parent Args', function() {
       expect(contents).to.be.equal('--debug-port=3333');
     });
 
-    after(function() {
-      runner.teardown([
+    after(async function() {
+      await runner.teardown([
         path.join(outputPath)
       ]);
     });

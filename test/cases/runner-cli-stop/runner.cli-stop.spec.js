@@ -49,8 +49,8 @@ describe('Server Fixture for Manual Process Stop', function() {
       expect(response.status).to.equal(200);
     });
 
-    after(function() {
-      runner.stopCommand();
+    after(async function() {
+      await runner.stopCommand();
     });
   });
 
@@ -61,12 +61,12 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner = new Runner();
     });
 
-    it('should run without issue', function() {
-      runner.stopCommand();
+    it('should run without issue', async function() {
+      await runner.stopCommand();
     });
 
-    after(function() {
-      runner.teardown([
+    after(async function() {
+      await runner.teardown([
         path.join(outputPath)
       ]);
     });

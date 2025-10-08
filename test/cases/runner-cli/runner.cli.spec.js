@@ -29,10 +29,10 @@ describe('CLI Fixture', function() {
   describe('default options with relative path', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath);
-      runner.runCommand(
+      await runner.setup(outputPath);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -72,10 +72,10 @@ describe('CLI Fixture', function() {
   describe('setup with setupFiles', function() {
     let runner;
 
-    before(function() {
+    before(async function() {
       runner = new Runner();
-      runner.setup(outputPath, setupFiles);
-      runner.runCommand(
+      await runner.setup(outputPath, setupFiles);
+      await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
         fixturesPath // args
       );
@@ -109,15 +109,15 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/webcomponents-bundle.js`)).to.be.equal(true);
     });
 
-    it('should delete the setup file we provided', function() {
+    it('should delete the setup file we provided', async function() {
       const setupFile = path.join(outputPath, 'webcomponents-bundle.js');
-      runner.teardown();
+      await runner.teardown();
 
       expect(fs.existsSync(setupFile)).to.be.equal(false);
       expect(fs.existsSync(outputPath)).to.be.equal(true);
 
       // cleanup everything
-      runner.teardown([outputPath]);
+      await runner.teardown([outputPath]);
       expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
   });

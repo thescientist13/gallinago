@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { spawn, spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 
 class Runner {
   constructor(enableStdOut = false, forwardParentArgs = false) {
@@ -36,14 +36,13 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args, options = {}) {
+  runCommand(binPath, args) {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
       const forwardArgs = this.forwardParentArgs ? process.execArgv : [];
       const finalArgs = [...forwardArgs, cliPath];
-      const spawnAction = options.async ? spawn : spawnSync;
       let err = '';
 
       if (Array.isArray(args)) {
@@ -56,7 +55,7 @@ class Runner {
         reject(`Error: Cannot find path ${binPath}`);
       }
 
-      this.childProcess = spawnAction(executable, finalArgs, {
+      this.childProcess = spawn(executable, finalArgs, {
         cwd: this.rootDir,
         shell: false,
         detached: !isWindows,
@@ -91,6 +90,8 @@ class Runner {
       if (this.childProcess) {
         this.childProcess.kill();
         resolve();
+      } else {
+        resolve()
       }
     });
   }
