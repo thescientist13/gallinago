@@ -83,16 +83,30 @@ await runner.setup(__dirname);
 
 Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide these files as an array of objects.
 
-* `source`: path of the file to copy
-* `destination`: path of where to copy the file to
+- `source`: path of the file to copy (can be a string or URL object)
+- `destination`: path of where to copy the file to (can be a string or URL object)
 
 A third options object can be provided with the following supported options
+
 - `create` - automatically create the directory provided in the first param (default is `true`)
+
+Using string paths:
 
 ```js
 await runner.setup(__dirname, [{
   source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
   destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
+}], {
+  create: true
+});
+```
+
+Using URL objects:
+
+```js
+await runner.setup(__dirname, [{
+  source: new URL('./node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js', import.meta.url),
+  destination: new URL('./build/webcomponents-bundle.js', import.meta.url)
 }], {
   create: true
 });

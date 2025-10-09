@@ -24,8 +24,11 @@ class Runner {
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
-            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
-            fs.copyFileSync(file.source, file.destination);
+            const sourcePath = file.source instanceof URL ? file.source.pathname : file.source;
+            const destinationPath = file.destination instanceof URL ? file.destination.pathname : file.destination;
+            
+            fs.mkdirSync(path.dirname(destinationPath), { recursive: true });
+            fs.copyFileSync(sourcePath, destinationPath);
           });
         }
 
@@ -99,9 +102,14 @@ class Runner {
     return new Promise((resolve, reject) => {
       try {
         (this.setupFiles || []).concat(additionalFiles).forEach((file) => {
-          const deletePath = file.destination
+          let deletePath = file.destination
             ? file.destination
             : file;
+          
+          // Handle URL objects
+          if (deletePath instanceof URL) {
+            deletePath = deletePath.pathname;
+          }
 
           if (fs.existsSync(deletePath)) {
             if (fs.lstatSync(deletePath).isDirectory()) {
