@@ -15,6 +15,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
+import { mock } from 'node:test';
 
 const expect = chai.expect;
 
@@ -26,7 +27,10 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     let runner;
 
     before(async function() {
-      runner = new Runner();
+      mock.method(console, 'log', () => {
+        // Stub
+      });
+      runner = new Runner(true);
       await runner.setup(outputPath);
       await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
