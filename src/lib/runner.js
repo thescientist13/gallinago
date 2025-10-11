@@ -18,7 +18,7 @@ class Runner {
       if (path.isAbsolute(rootDir)) {
         this.rootDir = rootDir;
 
-        if (options.create && !fs.existsSync(rootDir)) {
+        if (options.create) {
           fs.mkdirSync(this.rootDir, { recursive: true });
         }
 
