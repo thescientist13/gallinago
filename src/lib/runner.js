@@ -18,7 +18,7 @@ class Runner {
       if (path.isAbsolute(rootDir)) {
         this.rootDir = rootDir;
 
-        if (options.create) {
+        if (options.create && !fs.existsSync(rootDir)) {
           fs.mkdirSync(this.rootDir, { recursive: true });
         }
 
@@ -87,8 +87,16 @@ class Runner {
   stopCommand() {
     return new Promise((resolve) => {
       if (this.childProcess) {
+        let interval;
+
         this.childProcess.kill();
-        resolve();
+
+        interval = setInterval(() => {
+          if(this.childProcess.killed) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
       } else {
         resolve()
       }
