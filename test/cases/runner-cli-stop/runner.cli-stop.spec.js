@@ -57,20 +57,9 @@ describe('Server Fixture for Manual Process Stop', function() {
   });
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
-    let runner;
-
-    before(function() {
-      runner = new Runner();
-    });
-
     it('should run without issue', async function() {
+      const runner = new Runner();
       await runner.stopCommand();
-    });
-
-    after(async function() {
-      await runner.teardown([
-        path.join(outputPath)
-      ]);
     });
   });
 
