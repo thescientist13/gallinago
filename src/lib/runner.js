@@ -87,16 +87,11 @@ class Runner {
   stopCommand() {
     return new Promise((resolve) => {
       if (this.childProcess) {
-        let interval;
+        this.childProcess.on('exit', () => {
+          resolve();
+        })
 
         this.childProcess.kill();
-
-        interval = setInterval(() => {
-          if(this.childProcess.killed) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 50);
       } else {
         resolve()
       }
