@@ -28,19 +28,21 @@ describe('Server Fixture for Manual Process Stop', function() {
 
     before(async function() {
       runner = new Runner();
-      runner.setup(outputPath);
+      await runner.setup(outputPath);
 
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
+      await runner.runCommand(
+        `${fixturesPath}/server.js`,
+        [],
+        { background: true }
+      );
 
-        runner.runCommand(
-          `${fixturesPath}/server.js`,
-          null,
-          { async: true }
-        );
-      });
+      await new Promise((resolve) => {
+        runner.onStdOut((message) => {
+          if (message.includes('server started on port 8080')) {
+            resolve();
+          }
+        });
+      })
     });
 
     it('should start the server on port 8080', async function() {
@@ -55,20 +57,9 @@ describe('Server Fixture for Manual Process Stop', function() {
   });
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
-    let runner;
-
-    before(function() {
-      runner = new Runner();
-    });
-
     it('should run without issue', async function() {
+      const runner = new Runner();
       await runner.stopCommand();
-    });
-
-    after(async function() {
-      await runner.teardown([
-        path.join(outputPath)
-      ]);
     });
   });
 

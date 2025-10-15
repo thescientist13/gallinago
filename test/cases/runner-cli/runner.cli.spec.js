@@ -62,8 +62,8 @@ describe('CLI Fixture', function() {
       expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
     });
 
-    it('should delete the output directory when told', function() {
-      runner.teardown([outputPath]);
+    it('should delete the output directory when told', async function() {
+      await runner.teardown([outputPath]);
 
       expect(fs.existsSync(outputPath)).to.be.equal(false);
     });
