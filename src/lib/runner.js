@@ -87,8 +87,8 @@ class Runner {
   stopCommand() {
     return new Promise((resolve) => {
       if (this.childProcess) {
+        this.childProcess.on('exit', resolve);
         this.childProcess.kill();
-        resolve();
       } else {
         resolve()
       }
