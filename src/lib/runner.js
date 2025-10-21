@@ -4,6 +4,15 @@ import path from 'path';
 import { spawn } from 'child_process';
 
 class Runner {
+  // JS strings can be up to 2^53 - 1 in length,
+  // so no need to worry about overflow
+  // https://262.ecma-international.org/16.0/index.html#sec-ecmascript-language-types-string-type
+  #stdOutBuffer = '';
+  #stdErrBuffer = '';
+
+  #stdOutSubscribers = [];
+  #stdErrSubscribers = [];
+
   constructor(enableStdOut = false, forwardParentArgs = false) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.forwardParentArgs = forwardParentArgs;
@@ -36,14 +45,13 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args) {
+  runCommand(binPath, args, options = { background: false }) {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
       const forwardArgs = this.forwardParentArgs ? process.execArgv : [];
       const finalArgs = [...forwardArgs, cliPath];
-      let err = '';
 
       if (Array.isArray(args)) {
         finalArgs.push(...args);
@@ -62,26 +70,63 @@ class Runner {
       });
 
       this.childProcess.on('close', code => {
-        if (err !== '' && code && code !== 0) {
-          reject(err);
+        if (code && code !== 0) {
+          reject(this.#stdErrBuffer);
           return;
         }
         resolve();
       });
 
       this.childProcess.stderr.on('data', (data) => {
-        err = data.toString('utf8');
+        const text = data.toString('utf8');
+        this.#stdErrBuffer += text;
+
         if (this.enableStdOut) {
-          console.error(err);
+          console.error(text);
         }
+
+        this.#stdErrSubscribers.forEach((callback) => callback(text));
       });
 
       this.childProcess.stdout.on('data', (data) => {
+        const text = data.toString('utf8');
+        this.#stdOutBuffer += text;
+
         if (this.enableStdOut) {
-          console.log(data.toString('utf8'));
+          console.log(text);
         }
+
+        this.#stdOutSubscribers.forEach((callback) => callback(text));
       });
+
+      if (options.background) {
+        resolve();
+      }
     });
+  }
+
+  getStdOut() {
+    return this.#stdOutBuffer;
+  }
+
+  getStdErr() {
+    return this.#stdErrBuffer;
+  }
+
+  onStdOut(callback, options = { replay: true }) {
+    if (options.replay && this.#stdOutBuffer.length > 0) {
+      callback(this.#stdOutBuffer);
+    }
+
+    this.#stdOutSubscribers.push(callback);
+  }
+
+  onStdErr(callback, options = { replay: true }) {
+    if (options.replay && this.#stdErrBuffer.length > 0) {
+      callback(this.#stdErrBuffer);
+    }
+
+    this.#stdErrSubscribers.push(callback);
   }
 
   stopCommand() {

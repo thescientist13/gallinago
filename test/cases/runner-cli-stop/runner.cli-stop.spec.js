@@ -30,17 +30,19 @@ describe('Server Fixture for Manual Process Stop', function() {
       runner = new Runner();
       runner.setup(outputPath);
 
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
+      await runner.runCommand(
+        `${fixturesPath}/server.js`,
+        [],
+        { background: true }
+      );
 
-        runner.runCommand(
-          `${fixturesPath}/server.js`,
-          null,
-          { async: true }
-        );
-      });
+      await new Promise((resolve) => {
+        runner.onStdOut((message) => {
+          if (message.includes('server started on port 8080')) {
+            resolve();
+          }
+        });
+      })
     });
 
     it('should start the server on port 8080', async function() {
