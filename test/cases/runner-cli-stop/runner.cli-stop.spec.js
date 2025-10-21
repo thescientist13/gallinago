@@ -28,7 +28,7 @@ describe('Server Fixture for Manual Process Stop', function() {
 
     before(async function() {
       runner = new Runner();
-      await runner.setup(outputPath);
+      runner.setup(outputPath);
 
       await runner.runCommand(
         `${fixturesPath}/server.js`,

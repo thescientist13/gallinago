@@ -45,10 +45,12 @@ describe('CLI Error Handling', function() {
       await expect(
         runner.runCommand(
           path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
+          null
         )
       ).to.be.rejectedWith(
-        'Error: Child process throwing a Promise.reject to the parent.',
+        'Error: Child process throwing a Promise.reject to the parent.'
       );
     });
   });
+
 });
