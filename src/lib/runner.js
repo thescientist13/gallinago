@@ -70,7 +70,7 @@ class Runner {
 
       this.childProcess.on('close', (code) => {
         if (code !== 0) {
-          reject(code);
+          reject(this.#stdErrBuffer);
           return;
         }
         resolve();
