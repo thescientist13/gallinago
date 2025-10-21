@@ -49,8 +49,9 @@ class Runner {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
+      const cliPath = binPath;
       const forwardArgs = this.forwardParentArgs ? process.execArgv : [];
-      const finalArgs = [...forwardArgs, binPath];
+      const finalArgs = [...forwardArgs, cliPath];
 
       if (Array.isArray(args)) {
         finalArgs.push(...args);
@@ -68,8 +69,8 @@ class Runner {
         detached: !isWindows
       });
 
-      this.childProcess.on('close', (code) => {
-        if (code !== 0) {
+      this.childProcess.on('close', code => {
+        if (code && code !== 0) {
           reject(this.#stdErrBuffer);
           return;
         }
@@ -133,7 +134,7 @@ class Runner {
         this.childProcess.on('exit', resolve);
         this.childProcess.kill();
       } else {
-        resolve();
+        resolve()
       }
     });
   }
