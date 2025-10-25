@@ -4,15 +4,6 @@ import path from 'path';
 import { spawn } from 'child_process';
 
 class Runner {
-  // JS strings can be up to 2^53 - 1 in length,
-  // so no need to worry about overflow
-  // https://262.ecma-international.org/16.0/index.html#sec-ecmascript-language-types-string-type
-  #stdOutBuffer = '';
-  #stdErrBuffer = '';
-
-  #stdOutSubscribers = [];
-  #stdErrSubscribers = [];
-
   constructor(enableStdOut = false, forwardParentArgs = false) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.forwardParentArgs = forwardParentArgs;
@@ -45,13 +36,14 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args, options = { background: false }) {
+  runCommand(binPath, args, options = { onStdOut: null }) {
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
       const forwardArgs = this.forwardParentArgs ? process.execArgv : [];
       const finalArgs = [...forwardArgs, cliPath];
+      let err = '';
 
       if (Array.isArray(args)) {
         finalArgs.push(...args);
@@ -70,8 +62,8 @@ class Runner {
       });
 
       this.childProcess.on('close', code => {
-        if (code && code !== 0) {
-          reject(this.#stdErrBuffer);
+        if (err !== '' && code && code !== 0) {
+          reject(err);
           return;
         }
         resolve();
@@ -81,51 +73,22 @@ class Runner {
         err += data.toString("utf8"); // Max string size ~1GiB
 
         if (this.enableStdOut) {
-          console.error(text);
+          console.error(err);
         }
-
-        this.#stdErrSubscribers.forEach((callback) => callback(text));
       });
 
       this.childProcess.stdout.on('data', (data) => {
         const text = data.toString('utf8');
-        this.#stdOutBuffer += text;
+
+        if (options.onStdOut) {
+          options.onStdOut(text);
+        }
 
         if (this.enableStdOut) {
           console.log(text);
         }
-
-        this.#stdOutSubscribers.forEach((callback) => callback(text));
       });
-
-      if (options.background) {
-        resolve();
-      }
     });
-  }
-
-  getStdOut() {
-    return this.#stdOutBuffer;
-  }
-
-  getStdErr() {
-    return this.#stdErrBuffer;
-  }
-
-  onStdOut(callback, options = { replay: true }) {
-    if (options.replay && this.#stdOutBuffer.length > 0) {
-      callback(this.#stdOutBuffer);
-    }
-
-    this.#stdOutSubscribers.push(callback);
-  }
-
-  onStdErr(callback, options = { replay: true }) {
-    if (options.replay && this.#stdErrBuffer.length > 0) {
-      callback(this.#stdErrBuffer);
-    }
-
-    this.#stdErrSubscribers.push(callback);
   }
 
   stopCommand() {
