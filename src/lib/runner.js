@@ -83,13 +83,13 @@ class Runner {
 
       this.childProcess.stdout.on('data', (data) => {
         const text = data.toString('utf8');
+        
+        if (this.enableStdOut) {
+          console.log(text);
+        }
 
         if (options.onStdOut) {
           options.onStdOut(text);
-        }
-
-        if (this.enableStdOut) {
-          console.log(text);
         }
       });
     });
