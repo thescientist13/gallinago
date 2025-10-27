@@ -118,6 +118,20 @@ await runner.runCommand(
 );
 ```
 
+#### Options
+
+`runCommand` additionally takes an options object as the third param. With it you can further customize the runner:
+
+```js
+runner.runCommand(
+  '/path/to/cli.js',
+  '--version',
+  { onStdOut: (text) => console.log(text) }
+);
+```
+
+`onStdOut` - a callback function that is invoked with a string each time the child process writes to std out. Defaults to `null`.
+
 ### Runner.teardown
 
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
