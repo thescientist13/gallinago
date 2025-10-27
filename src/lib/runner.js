@@ -37,6 +37,10 @@ class Runner {
   }
 
   runCommand(binPath, args, options = { onStdOut: null }) {
+    if (options?.onStdOut && typeof options.onStdOut !== 'function') {
+      throw new TypeError('onStdOut must be passed a function or null');
+    }
+
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
