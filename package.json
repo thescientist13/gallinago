@@ -22,7 +22,10 @@
     "node": ">=18"
   },
   "exports": {
-    ".": "./src/index.js"
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    }
   },
   "scripts": {
     "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
