@@ -36,7 +36,11 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args) {
+  runCommand(binPath, args, options = { onStdOut: null }) {
+    if (options?.onStdOut && typeof options.onStdOut !== 'function') {
+      throw new TypeError('onStdOut must be passed a function or null');
+    }
+
     return new Promise((resolve, reject) => {
       const executable = 'node';
       const isWindows = os.platform() === 'win32';
@@ -71,14 +75,21 @@ class Runner {
 
       this.childProcess.stderr.on('data', (data) => {
         err += data.toString("utf8"); // Max string size ~1GiB
+
         if (this.enableStdOut) {
           console.error(err);
         }
       });
 
       this.childProcess.stdout.on('data', (data) => {
+        const text = data.toString('utf8');
+        
         if (this.enableStdOut) {
-          console.log(data.toString('utf8'));
+          console.log(text);
+        }
+
+        if (options.onStdOut) {
+          options.onStdOut(text);
         }
       });
     });

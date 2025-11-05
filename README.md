@@ -118,6 +118,39 @@ await runner.runCommand(
 );
 ```
 
+#### Options
+
+`runCommand` additionally takes an options object as the third param. With it you can further customize the runner:
+
+```js
+runner.runCommand(
+  '/path/to/cli.js',
+  '--version',
+  { onStdOut: (text) => console.log(text) }
+);
+```
+
+##### onStdOut
+This is a callback function that is invoked with a string each time the child process writes to std out. Defaults to `null`.  In conjunction with `stopCommand`, this can be useful to listen for when a long running command is "ready", like waiting for a web server to start.
+
+```js
+before(async function () {
+  await runner.setup(outputPath);
+
+  await new Promise((resolve, reject) => {
+    runner.runCommand(
+      '/path/to/cli.js',
+      "develop",
+      { onStdOut: (message) => {
+        if (message.includes(`Started local development server at http://localhost:8080`)) {
+          resolve();
+        }
+      }}
+    ).catch(reject)
+  });
+});
+```
+
 ### Runner.teardown
 
 `Runner.teardown` deletes any `setupFiles` provided in `Runner.setup`.  Returns a `Promise`.
