@@ -1,5 +1,5 @@
 interface RunnerConstructor {
-  new (enableStdOut?: boolean, forwardParentArgs?: boolean): RunnerInterface;
+  new (enableStdOut?: boolean, forwardParentArgs?: boolean, runtimeArgs?: string[]): RunnerInterface;
 }
 
 export interface RunnerInterface {

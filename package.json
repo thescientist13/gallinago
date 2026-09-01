@@ -19,7 +19,8 @@
     "src/"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "deno": ">=2"
   },
   "exports": {
     ".": {
@@ -30,6 +31,7 @@
   "scripts": {
     "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
     "test": "c8 node --debug-port 3333 ./node_modules/mocha/bin/mocha",
+    "test:deno": "deno run -A ./node_modules/mocha/bin/mocha --require ./test/test-register-deno.js",
     "test:tdd": "npm test -- --watch"
   },
   "devDependencies": {
