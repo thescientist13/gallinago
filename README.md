@@ -3,9 +3,12 @@
 [![GitHub release](https://img.shields.io/github/tag/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/tags)
 [![GitHub issues](https://img.shields.io/github/issues-pr-raw/thescientist13/gallinago.svg)](https://github.com/thescientist13/gallinago/issues)
 [![NodeJS compatibility](https://img.shields.io/node/v/gallinago.svg)](https://nodejs.org/en/about/previous-releases)
+[![Deno compatibility](https://img.shields.io/deno/v/gallinago.svg)](https://docs.deno.com/runtime/fundamentals/stability_and_releases/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/thescientist13/gallinago/master/LICENSE.md)
 
-[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is designed to assist with the running and testing of NodeJS CLIs and binaries in a simple and controlled way.  It is best used in combination with fixtures and pre-scaffolded directories such that you can reproduce the various configuration and folder structures your CLI may need to support for its users and then validate the output.  Perfect for testing!
+[**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is designed to assist with the running and testing of CLIs and binaries in a simple and controlled way.  It is best used in combination with fixtures and pre-scaffolded directories such that you can reproduce the various configuration and folder structures your CLI may need to support for its users and then validate the output.  Perfect for testing!
+
+Supports NodeJS and Deno.
 
 ![gallinago](./.github/assets/gallinago.jpg)
 
@@ -64,14 +67,29 @@ The `Runner` constructor returns a new instance of `Runner`.
 ```js
 import { Runner } from 'gallinago';
 
-const runner = new Runner();  // pass true to the constructor to enable stdout
+const runner = new Runner();
 ```
 
 #### Options
 
-`Runner` takes two boolean flags (`true`|`false`)
-- Standard Out - pass `true` to have the Runner log to `stdout`
-- Forward Parent Args - pass `true` and any `node` flags passed to the parent process will be made available to the child process
+`Runner` accepts three optional parameters:
+
+```js
+new Runner(enableStdOut, forwardParentArgs, runtimeArgs);
+```
+
+- `enableStdOut` (`boolean`, default: `false`) - log the child process output to `stdout` and `stderr`.
+- `forwardParentArgs` (`boolean`, default: `false`) - forward runtime flags from the parent process to the child process.
+- `runtimeArgs` (`string[]`, default: `process.execArgv`) - the runtime flags to forward when `forwardParentArgs` is enabled.
+
+Providing `runtimeArgs` is useful when the flags needed by the child process are not available through `process.execArgv`, as can happen when running under Deno:
+
+```js
+const runner = new Runner(false, true, [
+  '--import',
+  new URL('./register.js', import.meta.url).href
+]);
+```
 
 ### Runner.setup (required)
 

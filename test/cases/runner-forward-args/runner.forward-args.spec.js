@@ -23,7 +23,7 @@ describe('Forward Parent Args', function() {
   const currentPath = fileURLToPath(new URL('.', import.meta.url));
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
 
-  describe('default options with Forward Parent Args set to true', function() {
+  describe('default options with forwardParentArgs set to true', function() {
     let runner;
 
     before(async function() {
@@ -46,10 +46,13 @@ describe('Forward Parent Args', function() {
       expect(exists).to.be.equal(true);
     });
 
-    it('should have the expected debug output for forwarded parent args', function() {
+    it('should have the expected output for forwarded parent args', function() {
       const contents = fs.readFileSync(path.join(outputPath, 'args.txt'), 'utf-8');
+      const expected = globalThis.Deno
+        ? `--import=${new URL('../../test-register-deno.js', import.meta.url).href}`
+        : '--debug-port=3333';
 
-      expect(contents).to.be.equal('--debug-port=3333');
+      expect(contents).to.be.equal(expected);
     });
 
     after(async function() {
