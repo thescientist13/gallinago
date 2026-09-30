@@ -136,6 +136,8 @@ await runner.runCommand(
 );
 ```
 
+The promise resolves when the command exits with code `0`, even if it writes to stderr. A nonzero exit, signal termination, or spawn failure rejects with an `Error`. The error includes `command`, `cwd`, `exitCode`, `signal`, `stdout`, and `stderr` properties. The output properties contain the last 65,536 characters of each stream. The error message shows stdout and stderr in separate labeled sections. For a spawn failure, `exitCode` is `null` and the original error is available as `cause`.
+
 #### Options
 
 `runCommand` additionally takes an options object as the third param. With it you can further customize the runner:
@@ -203,4 +205,6 @@ To support this in Gallinago, you can use `Runner.stopCommand` to kill any and a
 await runner.stopCommand();
 ```
 
-> _**Note**: When used with something like mocha, you'll need to [use a `setTimeout` to work around the hung process and still advance the parent Mocha process](https://stackoverflow.com/a/24862303/417806).  See [our spec for this test case](https://github.com/thescientist13/gallinago/blob/master/test/cases/runner-cli-stop/runner.cli-stop.spec.js) for a complete example._
+If the child has already exited, `stopCommand()` resolves immediately. If a request to stop a running child fails, the promise rejects. A successful stop request still waits for the child to exit.
+
+> _`stopCommand()` has no timeout after a successful kill request. A child that ignores termination needs a separate timeout policy in the caller._
