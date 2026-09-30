@@ -8,6 +8,16 @@ import { Runner } from '../../../src/index.js';
 const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.js');
 
 describe('process outcomes', function() {
+  it('should throw for a non-function stdout callback before spawning', function() {
+    const runner = new Runner();
+
+    assert.throws(
+      () => runner.runCommand(fixturePath, [], { onStdOut: 'invalid' }),
+      { name: 'TypeError', message: 'onStdOut must be passed a function or null' }
+    );
+    assert.equal(runner.childProcess, null);
+  });
+
   it('should reject a nonzero exit with empty stderr and include command context', async function() {
     const runner = new Runner();
 
@@ -90,6 +100,18 @@ describe('process outcomes', function() {
       assert.equal(error.signal, null);
       assert.equal(error.cause.code, 'ENOENT');
       assert.match(error.message, /could not start/);
+      return true;
+    });
+  });
+
+  it('should reject an invalid spawn argument with its cause', async function() {
+    const runner = new Runner();
+
+    await assert.rejects(runner.runCommand(fixturePath, ['\0']), (error) => {
+      assert.ok(error.cause instanceof Error);
+      assert.equal(error.exitCode, null);
+      assert.match(error.command, /cli-process-outcomes\.js/);
+      assert.equal(error.cwd, process.cwd());
       return true;
     });
   });
