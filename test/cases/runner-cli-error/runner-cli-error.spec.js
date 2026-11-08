@@ -10,13 +10,10 @@
  * runCommand('test/fixtures/cliiiii')
  *
  */
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
-
-chai.use(chaiAsPromised);
-const expect = chai.expect;
 
 describe('CLI Error Handling', function() {
 
@@ -24,8 +21,8 @@ describe('CLI Error Handling', function() {
     it('should throw an error that module cannot be found', async function() {
       const binPath = 'test/fixtures/cliiiiii.js';
       const runner = new Runner();
-      await expect(runner.runCommand(binPath)).to.be.rejectedWith(
-        `Error: Cannot find path ${binPath}`
+      await assert.rejects(runner.runCommand(binPath), (error) =>
+        error === `Error: Cannot find path ${binPath}`
       );
     });
   });
@@ -33,22 +30,24 @@ describe('CLI Error Handling', function() {
   describe('default options with relative path for rootDir', function() {
     it('should throw an error that rootDir is not absolute', async function() {
       const runner = new Runner();
-      await expect(
-        runner.setup('../../test/fixtures/cli.js')
-      ).to.be.rejectedWith('Error: rootDir is not an absolute path');
+      await assert.rejects(
+        runner.setup('../../test/fixtures/cli.js'),
+        (error) => error === 'Error: rootDir is not an absolute path'
+      );
     });
   });
 
   describe('handling (and bubbling) an exception from the child process', function() {
     it('should throw an error that this is child throwing (a Promise.reject)', async function() {
       const runner = new Runner();
-      await expect(
+      await assert.rejects(
         runner.runCommand(
           path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
           null
+        ),
+        (error) => typeof error === 'string' && error.includes(
+          'Error: Child process throwing a Promise.reject to the parent.'
         )
-      ).to.be.rejectedWith(
-        'Error: Child process throwing a Promise.reject to the parent.'
       );
     });
   });

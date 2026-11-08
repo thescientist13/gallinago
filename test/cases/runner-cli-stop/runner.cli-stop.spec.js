@@ -12,12 +12,11 @@
  * runCommand('test/fixtures/cli', 'test/fixtures')
  *
  */
-import chai from 'chai';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
-
-const expect = chai.expect;
 
 describe('Server Fixture for Manual Process Stop', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
@@ -47,7 +46,7 @@ describe('Server Fixture for Manual Process Stop', function() {
     it('should start the server on port 8080', async function() {
       const response = await fetch('http://127.0.0.1:8080');
 
-      expect(response.status).to.equal(200);
+      assert.equal(response.status, 200);
     });
 
     after(async function() {

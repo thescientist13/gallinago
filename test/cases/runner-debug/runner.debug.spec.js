@@ -10,13 +10,12 @@
  * runCommand('test/fixtures/cli', 'test/fixtures')
  *
  */
-import chai from 'chai';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
 import fs from 'fs-extra';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
-
-const expect = chai.expect;
 
 describe('CLI Fixture w/debug (stdOut) enabled', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
@@ -37,25 +36,25 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     it('should have created the output folder', function() {
       const exists = fs.existsSync(outputPath);
 
-      expect(exists).to.be.equal(true);
+      assert.equal(exists, true);
     });
 
     it('should only copy 3 files', function() {
       const files = fs.readdirSync(outputPath);
 
-      expect(files.length).to.be.equal(3);
+      assert.equal(files.length, 3);
     });
 
     it('should have an .editorconfig file', function() {
-      expect(fs.existsSync(`${outputPath}/.editorconfig`)).to.be.equal(true);
+      assert.equal(fs.existsSync(`${outputPath}/.editorconfig`), true);
     });
 
     it('should have an .eslintrc file', function() {
-      expect(fs.existsSync(`${outputPath}/.eslintrc.cjs`)).to.be.equal(true);
+      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cjs`), true);
     });
 
     it('should have .mocharc file', function() {
-      expect(fs.existsSync(`${outputPath}/.mocharc.cjs`)).to.be.equal(true);
+      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cjs`), true);
     });
 
     after(async function() {

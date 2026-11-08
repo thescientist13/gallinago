@@ -19,8 +19,6 @@ export default [
         requireConfigFile: false,
       },
       globals: {
-        ...globals.mocha,
-        ...globals.chai,
         ...globals.node,
       },
     },

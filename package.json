@@ -29,23 +29,20 @@
     }
   },
   "scripts": {
-    "lint": "eslint \"*.cjs\" \"./src/**/**/*.js\" \"./test/**/**/*.js\"",
-    "test": "c8 node --debug-port 3333 ./node_modules/mocha/bin/mocha",
-    "test:deno": "deno run -A ./node_modules/mocha/bin/mocha --require ./test/test-register-deno.js",
+    "lint": "eslint \"./src/**/*.js\" \"./test/**/*.js\" \"eslint.config.js\"",
+    "test": "c8 node test/run-tests.js --test-timeout=30000",
+    "test:deno": "node test/run-tests.js --deno",
     "test:tdd": "npm test -- --watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "c8": "^7.14.0",
-    "chai": "^4.3.10",
-    "chai-as-promised": "^8.0.1",
     "eslint": "^9.11.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "fs-extra": "^9.0.1",
     "globals": "^15.10.0",
     "koa": "^2.13.1",
-    "livereload": "^0.9.3",
-    "mocha": "^8.4.0"
+    "livereload": "^0.9.3"
   }
 }

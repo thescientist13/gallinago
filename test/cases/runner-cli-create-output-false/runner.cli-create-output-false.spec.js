@@ -10,12 +10,11 @@
  * runCommand('test/fixtures/cli', 'test/fixtures')
  *
  */
-import chai from 'chai';
+import { describe, it, before } from 'node:test';
+import assert from 'node:assert/strict';
 import fs from 'fs-extra';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
-
-const expect = chai.expect;
 
 describe('CLI Fixture', function() {
   const outputPath = fileURLToPath(new URL('./output/', import.meta.url));
@@ -31,7 +30,7 @@ describe('CLI Fixture', function() {
     it('should have created the output folder', function() {
       const exists = fs.existsSync(outputPath);
 
-      expect(exists).to.be.equal(false);
+      assert.equal(exists, false);
     });
   });
 });

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { mock } from 'node:test';
+import { mock, describe, it } from 'node:test';
 import { Runner } from '../../../src/index.js';
 
 const fixturesPath = path.join(process.cwd(), 'test/fixtures');
