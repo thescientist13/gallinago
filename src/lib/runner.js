@@ -33,7 +33,7 @@ function createCommandError({ command, cwd, code = null, signal = null, stdout =
 }
 
 class Runner {
-  constructor(enableStdOut = false, forwardParentArgs = false, runtimeArgs = process.execArgv) {
+  constructor({ enableStdOut = false, forwardParentArgs = false, runtimeArgs = process.execArgv } = {}) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.forwardParentArgs = forwardParentArgs;
     this.runtimeArgs = runtimeArgs;
@@ -41,14 +41,14 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, setupFiles = [], options = { create: true }) {
+  setup(rootDir, { setupFiles = [], create = true } = {}) {
     this.setupFiles = setupFiles;
 
     return new Promise((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
         this.rootDir = rootDir;
 
-        if (options.create) {
+        if (create) {
           fs.mkdirSync(this.rootDir, { recursive: true });
         }
 
@@ -66,8 +66,8 @@ class Runner {
     });
   }
 
-  runCommand(binPath, args, options = { onStdOut: null }) {
-    if (options?.onStdOut && typeof options.onStdOut !== 'function') {
+  runCommand(binPath, { args = [], onStdOut = null } = {}) {
+    if (onStdOut && typeof onStdOut !== 'function') {
       throw new TypeError('onStdOut must be passed a function or null');
     }
 
@@ -148,8 +148,8 @@ class Runner {
           console.log(text);
         }
 
-        if (options.onStdOut) {
-          options.onStdOut(text);
+        if (onStdOut) {
+          onStdOut(text);
         }
       });
     });

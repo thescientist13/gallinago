@@ -9,7 +9,7 @@
  * and correctly shuts down a live server
  *
  * runCommand
- * runCommand('test/fixtures/cli', 'test/fixtures')
+ * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
  *
  */
 import { describe, it, before, after } from 'node:test';
@@ -36,7 +36,6 @@ describe('Server Fixture for Manual Process Stop', function() {
         runner.setup(outputPath).then(() =>
           runner.runCommand(
             `${fixturesPath}/server.js`,
-            [],
             { onStdOut }
           ).catch(reject)
         )

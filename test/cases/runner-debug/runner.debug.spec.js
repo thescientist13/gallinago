@@ -7,7 +7,7 @@
  * Should run cli.js runCommand and test debug output
  *
  * runCommand
- * runCommand('test/fixtures/cli', 'test/fixtures')
+ * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
  *
  */
 import { describe, it, before, after } from 'node:test';
@@ -30,8 +30,8 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     console.error = (text) => stderr.push(text);
 
     try {
-      const runner = new Runner(true);
-      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, 'separate-streams'));
+      const runner = new Runner({ enableStdOut: true });
+      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, { args: 'separate-streams' }));
     } finally {
       console.log = originalLog;
       console.error = originalError;
@@ -49,7 +49,7 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
       await runner.setup(outputPath);
       await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
-        fixturesPath // args
+        { args: fixturesPath } // options
       );
     });
 

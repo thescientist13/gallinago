@@ -17,6 +17,15 @@ import { Runner } from '../../../src/index.js';
 
 describe('CLI Error Handling', function() {
 
+  it('should reject an invalid output callback without requiring arguments', function() {
+    const runner = new Runner();
+
+    assert.throws(() => runner.runCommand('unused.js', { onStdOut: 'invalid' }), {
+      name: 'TypeError',
+      message: 'onStdOut must be passed a function or null'
+    });
+  });
+
   describe('default options with incorrect binary path', function() {
     it('should throw an error that module cannot be found', async function() {
       const binPath = 'test/fixtures/cliiiiii.js';
@@ -41,8 +50,7 @@ describe('CLI Error Handling', function() {
       const runner = new Runner();
       await assert.rejects(
         runner.runCommand(
-          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
-          null
+          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js')
         ),
         (error) => {
           assert.ok(error instanceof Error);

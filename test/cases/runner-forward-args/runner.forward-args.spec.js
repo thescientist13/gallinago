@@ -7,7 +7,7 @@
  *
  * runCommand
  *
- * runner = new Runner(false, true);
+ * runner = new Runner({ forwardParentArgs: true });
  * runCommand('cli.js')
  *
  */
@@ -26,7 +26,7 @@ describe('Forward Parent Args', function() {
     let runner;
 
     before(async function() {
-      runner = new Runner(false, true);
+      runner = new Runner({ forwardParentArgs: true });
       await runner.setup(outputPath);
       await runner.runCommand(
         path.join(currentPath, 'cli.js') // binPath

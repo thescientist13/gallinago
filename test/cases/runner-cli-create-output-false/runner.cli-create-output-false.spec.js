@@ -7,7 +7,7 @@
  * Should run cli.js runCommand successfully with setup and not creating the output directory.
  *
  * runCommand
- * runCommand('test/fixtures/cli', 'test/fixtures')
+ * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
  *
  */
 import { describe, it, before } from 'node:test';
@@ -24,7 +24,7 @@ describe('CLI Fixture', function() {
 
     before(async function() {
       runner = new Runner();
-      await runner.setup(outputPath, [], { create: false });
+      await runner.setup(outputPath, { create: false });
     });
 
     it('should have created the output folder', function() {

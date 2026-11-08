@@ -49,7 +49,7 @@ const buildDir = fileURLToPath(new URL('./build', import.meta.url)); // required
 await runner.setup(buildDir);
 
 // runs your CLI
-// use the second param to pass any args
+// use the args option to pass any args
 await runner.runCommand(cliPath);
 
 // teardown buildDir
@@ -72,10 +72,10 @@ const runner = new Runner();
 
 #### Options
 
-`Runner` accepts three optional parameters:
+`Runner` accepts an optional options object:
 
 ```js
-new Runner(enableStdOut, forwardParentArgs, runtimeArgs);
+new Runner({ enableStdOut, forwardParentArgs, runtimeArgs });
 ```
 
 - `enableStdOut` (`boolean`, default: `false`) - log the child process output to `stdout` and `stderr`.
@@ -85,10 +85,10 @@ new Runner(enableStdOut, forwardParentArgs, runtimeArgs);
 Providing `runtimeArgs` is useful when the flags needed by the child process are not available through `process.execArgv`, as can happen when running under Deno:
 
 ```js
-const runner = new Runner(false, true, [
-  '--import',
-  new URL('./register.js', import.meta.url).href
-]);
+const runner = new Runner({
+  forwardParentArgs: true,
+  runtimeArgs: ['--import', new URL('./register.js', import.meta.url).href]
+});
 ```
 
 ### Runner.setup (required)
@@ -104,35 +104,37 @@ Optionally, you can provide "setup" files if you want to copy additional files i
 * `source`: path of the file to copy
 * `destination`: path of where to copy the file to
 
-A third options object can be provided with the following supported options
+The optional second argument is an options object with the following properties:
+- `setupFiles` - an array of `{ source, destination }` objects (default is `[]`)
 - `create` - automatically create the directory provided in the first param (default is `true`)
 
 ```js
-await runner.setup(__dirname, [{
-  source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
-  destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
-}], {
+await runner.setup(__dirname, {
+  setupFiles: [{
+    source: path.join(process.cwd(), 'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js'),
+    destination: path.join(__dirname, 'build', 'webcomponents-bundle.js')
+  }],
   create: true
 });
 ```
 
 ### Runner.runCommand
 
-`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the second param to pass any args to your CLI.  Returns a `Promise`.
+`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the `args` option to pass a string or array of arguments to your CLI (default is `[]`).  Returns a `Promise`.
 
 ```js
 await runner.runCommand(
   '/path/to/cli.js',
-  '--version'
+  { args: '--version' }
 );
 ```
 
-You can also provide an array as the second param to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
+You can also provide an array in `args` to support forwarding individual args, useful when using projects like [**commander**](https://www.npmjs.com/package/commander):
 
 ```js
 await runner.runCommand(
   '/path/to/cli.js',
-  ["--name", "my-app"]
+  { args: ["--name", "my-app"] }
 );
 ```
 
@@ -140,13 +142,12 @@ The promise resolves when the command exits with code `0`, even if it writes to 
 
 #### Options
 
-`runCommand` additionally takes an options object as the third param. With it you can further customize the runner:
+`runCommand` accepts an optional options object as the second argument. Combine `args` and `onStdOut` as needed:
 
 ```js
 runner.runCommand(
   '/path/to/cli.js',
-  '--version',
-  { onStdOut: (text) => console.log(text) }
+  { args: '--version', onStdOut: (text) => console.log(text) }
 );
 ```
 
@@ -160,8 +161,7 @@ before(async function () {
   await new Promise((resolve, reject) => {
     runner.runCommand(
       '/path/to/cli.js',
-      "develop",
-      { onStdOut: (message) => {
+      { args: "develop", onStdOut: (message) => {
         if (message.includes(`Started local development server at http://localhost:8080`)) {
           resolve();
         }
