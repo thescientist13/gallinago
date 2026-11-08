@@ -14,9 +14,9 @@
  */
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import path from 'path';
+import path from 'node:path';
 import { Runner } from '../../../src/index.js';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath, URL } from 'node:url';
 
 describe('Server Fixture for Manual Process Stop', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
