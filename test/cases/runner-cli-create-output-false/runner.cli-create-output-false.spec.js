@@ -14,7 +14,7 @@ import { describe, it, before } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs-extra';
 import { Runner } from '../../../src/index.js';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath, URL } from 'node:url';
 
 describe('CLI Fixture', function() {
   const outputPath = fileURLToPath(new URL('./output/', import.meta.url));

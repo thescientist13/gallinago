@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import livereload from 'livereload';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath, URL } from 'node:url';
 
 const app = new Koa();
 const port = 8080;
