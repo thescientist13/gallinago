@@ -2,14 +2,68 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
+import type { ChildProcessWithoutNullStreams } from 'node:child_process';
+
+interface RunnerOptions {
+  enableStdOut?: boolean;
+  forwardParentArgs?: boolean;
+  runtimeArgs?: string[];
+}
+
+interface SetupFile {
+  source: string;
+  destination: string;
+}
+
+interface SetupOptions {
+  setupFiles?: SetupFile[];
+  create?: boolean;
+}
+
+interface RunCommandOptions {
+  args?: string | string[];
+  onStdOut?: ((message: string) => void) | null;
+}
+
+export interface RunnerInterface {
+  setup(rootDir: string, options?: SetupOptions): Promise<void>;
+  runCommand(binPath: string, options?: RunCommandOptions): Promise<void>;
+  stopCommand(): Promise<void>;
+  teardown(additionalFiles?: string[]): Promise<void>;
+}
+
+/**
+ * Diagnostic error from runCommand() for a spawn failure, nonzero exit, or signal
+ * termination. Other failures can produce ordinary errors; narrow caught values
+ * before treating them as CommandError.
+ */
+export interface CommandError extends Error {
+  command: string;
+  cwd: string;
+  exitCode: number | null;
+  signal: NodeJS.Signals | null;
+  stdout: string;
+  stderr: string;
+  cause?: Error;
+}
+
+interface CommandErrorDetails {
+  command: string;
+  cwd: string;
+  code?: number | null;
+  signal?: NodeJS.Signals | null;
+  stdout?: string;
+  stderr?: string;
+  cause?: Error;
+}
 
 const MAX_CAPTURED_OUTPUT_LENGTH = 64 * 1024;
 
-function appendOutput(output, chunk) {
+function appendOutput(output: string, chunk: string): string {
   return (output + chunk).slice(-MAX_CAPTURED_OUTPUT_LENGTH);
 }
 
-function createCommandError({ command, cwd, code = null, signal = null, stdout = '', stderr = '', cause }) {
+function createCommandError({ command, cwd, code = null, signal = null, stdout = '', stderr = '', cause }: CommandErrorDetails): CommandError {
   const reason = cause
     ? `could not start: ${cause.message}`
     : signal
@@ -20,20 +74,27 @@ function createCommandError({ command, cwd, code = null, signal = null, stdout =
     stderr && `stderr:\n${stderr}`
   ].filter(Boolean).join('\n');
   const message = `Command ${reason}: ${command}\nWorking directory: ${cwd}${output ? `\n${output}` : ''}`;
-  const error = new Error(message, cause ? { cause } : undefined);
+  const error = new Error(message, cause ? { cause } : undefined) as Error & { cause?: Error };
 
-  error.command = command;
-  error.cwd = cwd;
-  error.exitCode = code;
-  error.signal = signal;
-  error.stdout = stdout;
-  error.stderr = stderr;
-
-  return error;
+  return Object.assign(error, {
+    command,
+    cwd,
+    exitCode: code,
+    signal,
+    stdout,
+    stderr
+  });
 }
 
-class Runner {
-  constructor({ enableStdOut = false, forwardParentArgs = false, runtimeArgs = process.execArgv } = {}) {
+class Runner implements RunnerInterface {
+  declare enableStdOut: boolean;
+  declare forwardParentArgs: boolean;
+  declare runtimeArgs: string[];
+  declare setupFiles: SetupFile[];
+  declare childProcess: ChildProcessWithoutNullStreams | null;
+  declare rootDir?: string;
+
+  constructor({ enableStdOut = false, forwardParentArgs = false, runtimeArgs = process.execArgv }: RunnerOptions = {}) {
     this.enableStdOut = enableStdOut; // debugging tests
     this.forwardParentArgs = forwardParentArgs;
     this.runtimeArgs = runtimeArgs;
@@ -41,10 +102,10 @@ class Runner {
     this.childProcess = null;
   }
 
-  setup(rootDir, { setupFiles = [], create = true } = {}) {
+  setup(rootDir: string, { setupFiles = [], create = true }: SetupOptions = {}): Promise<void> {
     this.setupFiles = setupFiles;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (path.isAbsolute(rootDir)) {
         this.rootDir = rootDir;
 
@@ -66,14 +127,15 @@ class Runner {
     });
   }
 
-  runCommand(binPath, { args = [], onStdOut = null } = {}) {
+  runCommand(binPath: string, { args = [], onStdOut = null }: RunCommandOptions = {}): Promise<void> {
     if (onStdOut && typeof onStdOut !== 'function') {
       throw new TypeError('onStdOut must be passed a function or null');
     }
 
-    return new Promise((resolve, reject) => {
-      const isDeno = Boolean(globalThis.Deno);
-      const executable = isDeno ? globalThis.Deno.execPath() : process.execPath;
+    return new Promise<void>((resolve, reject) => {
+      const deno = (globalThis as typeof globalThis & { Deno?: { execPath(): string } }).Deno;
+      const isDeno = Boolean(deno);
+      const executable = deno ? deno.execPath() : process.execPath;
       const isWindows = os.platform() === 'win32';
       const cliPath = binPath;
       const commandArgs = isDeno ? ['run', '-A'] : [];
@@ -96,7 +158,7 @@ class Runner {
       }
 
       const command = [executable, ...finalArgs].map((arg) => JSON.stringify(arg)).join(' ');
-      const commandError = (details) => createCommandError({
+      const commandError = (details: Pick<CommandErrorDetails, 'code' | 'signal' | 'cause'>) => createCommandError({
         command,
         cwd,
         stdout,
@@ -112,12 +174,12 @@ class Runner {
           detached: !isWindows
         });
       } catch (cause) {
-        reject(commandError({ cause }));
+        reject(commandError({ cause: cause as Error }));
         return;
       }
 
       this.childProcess = child;
-      let childError;
+      let childError: Error | undefined;
 
       child.once('error', (cause) => {
         childError = cause;
@@ -155,19 +217,19 @@ class Runner {
     });
   }
 
-  stopCommand() {
+  stopCommand(): Promise<void> {
     const child = this.childProcess;
 
     if (!child || child.exitCode !== null || child.signalCode !== null) {
       return Promise.resolve();
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const onExit = () => {
         child.removeListener('error', onError);
         resolve();
       };
-      const onError = (error) => {
+      const onError = (error: Error) => {
         child.removeListener('exit', onExit);
         reject(error);
       };
@@ -194,13 +256,11 @@ class Runner {
     });
   }
 
-  teardown(additionalFiles = []) {
-    return new Promise((resolve, reject) => {
+  teardown(additionalFiles: string[] = []): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       try {
-        (this.setupFiles || []).concat(additionalFiles).forEach((file) => {
-          const deletePath = file.destination
-            ? file.destination
-            : file;
+        [...(this.setupFiles || []), ...additionalFiles].forEach((file) => {
+          const deletePath = typeof file === 'string' ? file : file.destination;
 
           if (fs.existsSync(deletePath)) {
             if (fs.lstatSync(deletePath).isDirectory()) {

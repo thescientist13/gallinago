@@ -3,7 +3,7 @@
   "all": true,
 
   "include": [
-    "src/**/*.js"
+    "dist/**/*.js"
   ],
 
   "reporter": [

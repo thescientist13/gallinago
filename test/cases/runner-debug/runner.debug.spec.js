@@ -14,7 +14,7 @@ import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs-extra';
 import path from 'node:path';
-import { Runner } from '../../../src/index.js';
+import { Runner } from 'gallinago';
 import { fileURLToPath, URL } from 'node:url';
 
 describe('CLI Fixture w/debug (stdOut) enabled', function() {
