@@ -1,11 +1,11 @@
 interface RunnerConstructor {
-  new (enableStdOut?: boolean, forwardParentArgs?: boolean, runtimeArgs?: string[]): RunnerInterface;
+  new (options?: { enableStdOut?: boolean; forwardParentArgs?: boolean; runtimeArgs?: string[] }): RunnerInterface;
 }
 
 export interface RunnerInterface {
-  setup(rootDir: string, setupFiles?: string[], options?: { create?: boolean }): Promise<void>;
+  setup(rootDir: string, options?: { setupFiles?: { source: string; destination: string }[]; create?: boolean }): Promise<void>;
   
-  runCommand(binPath: string, args?: string | string[], options?: { onStdOut: (message:string) => void }): Promise<void>;
+  runCommand(binPath: string, options?: { args?: string | string[]; onStdOut?: ((message: string) => void) | null }): Promise<void>;
   
   stopCommand(): Promise<void>;
   

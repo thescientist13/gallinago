@@ -13,7 +13,6 @@ describe('CLI Fixture with output handlers', function() {
 
       await runner.runCommand(
         `${fixturesPath}/cli-writes-to-stdout.js`,
-        [],
         { onStdOut: onStdOutMock }
       );
 

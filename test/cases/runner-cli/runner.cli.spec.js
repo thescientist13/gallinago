@@ -7,7 +7,7 @@
  * Should run cli.js runCommand successfully with setup, runCommand and teardown functions called
  *
  * runCommand
- * runCommand('test/fixtures/cli', 'test/fixtures')
+ * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
  *
  */
 import { describe, it, before } from 'node:test';
@@ -33,7 +33,7 @@ describe('CLI Fixture', function() {
       await runner.setup(outputPath);
       await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
-        fixturesPath // args
+        { args: fixturesPath } // options
       );
     });
 
@@ -73,10 +73,10 @@ describe('CLI Fixture', function() {
 
     before(async function() {
       runner = new Runner();
-      await runner.setup(outputPath, setupFiles);
+      await runner.setup(outputPath, { setupFiles });
       await runner.runCommand(
         `${fixturesPath}/cli.js`, // binPath
-        fixturesPath // args
+        { args: fixturesPath } // options
       );
     });
 
