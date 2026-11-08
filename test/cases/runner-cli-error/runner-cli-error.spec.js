@@ -21,8 +21,7 @@ describe('CLI Error Handling', function() {
     it('should throw an error that module cannot be found', async function() {
       const binPath = 'test/fixtures/cliiiiii.js';
       const runner = new Runner();
-      await assert.rejects(runner.runCommand(binPath), (error) =>
-        error === `Error: Cannot find path ${binPath}`
+      await assert.rejects(runner.runCommand(binPath), { message: `Error: Cannot find path ${binPath}` }
       );
     });
   });
@@ -45,9 +44,13 @@ describe('CLI Error Handling', function() {
           path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js'),
           null
         ),
-        (error) => typeof error === 'string' && error.includes(
-          'Error: Child process throwing a Promise.reject to the parent.'
-        )
+        (error) => {
+          assert.ok(error instanceof Error);
+          assert.notEqual(error.exitCode, 0);
+          assert.match(error.stderr, /Error: Child process throwing a Promise\.reject to the parent\./);
+          assert.ok(error.message.includes(error.stderr));
+          return true;
+        }
       );
     });
   });
