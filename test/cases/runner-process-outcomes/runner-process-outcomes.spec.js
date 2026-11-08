@@ -13,7 +13,7 @@ describe('process outcomes', function() {
     const runner = new Runner();
 
     assert.throws(
-      () => runner.runCommand(fixturePath, [], { onStdOut: 'invalid' }),
+      () => runner.runCommand(fixturePath, { onStdOut: 'invalid' }),
       { name: 'TypeError', message: 'onStdOut must be passed a function or null' }
     );
     assert.equal(runner.childProcess, null);
@@ -22,7 +22,7 @@ describe('process outcomes', function() {
   it('should reject a nonzero exit with empty stderr and include command context', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, 'exit-without-stderr'), (error) => {
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'exit-without-stderr' }), (error) => {
       assert.ok(error instanceof Error);
       assert.match(error.command, /cli-process-outcomes\.js/);
       assert.equal(error.cwd, process.cwd());
@@ -41,7 +41,8 @@ describe('process outcomes', function() {
     const runner = new Runner();
     const output = [];
 
-    await runner.runCommand(fixturePath, 'warning-success', {
+    await runner.runCommand(fixturePath, {
+      args: 'warning-success',
       onStdOut: (text) => output.push(text)
     });
 
@@ -51,7 +52,7 @@ describe('process outcomes', function() {
   it('should keep stdout and stderr separate on failure', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, 'separate-streams'), (error) => {
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'separate-streams' }), (error) => {
       assert.equal(error.exitCode, 9);
       assert.equal(error.stdout, 'useful output\n');
       assert.equal(error.stderr, 'incidental warning\n');
@@ -63,7 +64,7 @@ describe('process outcomes', function() {
   it('should keep only the last 65,536 characters of stdout and stderr', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, 'large-output'), (error) => {
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'large-output' }), (error) => {
       assert.equal(error.exitCode, 2);
       assert.equal(error.stdout.length, 64 * 1024);
       assert.equal(error.stderr.length, 64 * 1024);
@@ -76,7 +77,8 @@ describe('process outcomes', function() {
   it('should reject when the child is terminated by a signal', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, 'wait-for-signal', {
+    await assert.rejects(runner.runCommand(fixturePath, {
+      args: 'wait-for-signal',
       onStdOut: (text) => {
         if (text.includes('ready')) {
           runner.childProcess.kill();
@@ -93,7 +95,7 @@ describe('process outcomes', function() {
   it('should reject a spawn failure with its cause and working directory', async function() {
     const runner = new Runner();
     const missingDirectory = path.join(os.tmpdir(), 'gallinago-missing-' + randomUUID());
-    await runner.setup(missingDirectory, [], { create: false });
+    await runner.setup(missingDirectory, { create: false });
 
     await assert.rejects(runner.runCommand(fixturePath), (error) => {
       assert.equal(error.cwd, missingDirectory);
@@ -108,7 +110,7 @@ describe('process outcomes', function() {
   it('should reject an invalid spawn argument with its cause', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, ['\0']), (error) => {
+    await assert.rejects(runner.runCommand(fixturePath, { args: ['\0'] }), (error) => {
       assert.ok(error.cause instanceof Error);
       assert.equal(error.exitCode, null);
       assert.match(error.command, /cli-process-outcomes\.js/);
@@ -121,7 +123,7 @@ describe('process outcomes', function() {
 describe('stopCommand after process termination', function() {
   it('should return after a child has already exited', async function() {
     const runner = new Runner();
-    await runner.runCommand(fixturePath, 'warning-success');
+    await runner.runCommand(fixturePath, { args: 'warning-success' });
     runner.childProcess.kill = () => { throw new Error('already exited child was killed'); };
 
     await runner.stopCommand();

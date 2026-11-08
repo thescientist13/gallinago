@@ -30,8 +30,8 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     console.error = (text) => stderr.push(text);
 
     try {
-      const runner = new Runner(true);
-      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, 'separate-streams'));
+      const runner = new Runner({ enableStdOut: true });
+      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, { args: 'separate-streams' }));
     } finally {
       console.log = originalLog;
       console.error = originalError;
