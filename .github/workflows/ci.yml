@@ -34,7 +34,7 @@ jobs:
       run: npm run build
 
     - name: Check types
-      run: npm run check:types
+      run: npm run check
 
     - name: Use test Node.js ${{ matrix.node }}
       uses: actions/setup-node@v6

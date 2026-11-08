@@ -30,13 +30,13 @@
     }
   },
   "scripts": {
-    "lint": "eslint \"./src/**/*.ts\" \"./test/**/*.js\" \"eslint.config.js\" \"tsdown.config.ts\"",
+    "lint": "eslint --flag unstable_native_nodejs_ts_config .",
     "test": "c8 node test/run-tests.js --test-timeout=30000",
     "test:deno": "node test/run-tests.js --deno",
     "test:tdd": "npm test -- --watch",
     "build": "tsdown",
     "build:watch": "tsdown --watch",
-    "check:types": "tsc --noEmit",
+    "check": "tsc --noEmit",
     "prepack": "npm run build"
   },
   "devDependencies": {
