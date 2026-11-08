@@ -11,13 +11,12 @@
  * runCommand('cli.js')
  *
  */
-import chai from 'chai';
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
 import fs from 'fs-extra';
 import path from 'path';
 import { Runner } from '../../../src/index.js';
 import { fileURLToPath, URL } from 'url';
-
-const expect = chai.expect;
 
 describe('Forward Parent Args', function() {
   const currentPath = fileURLToPath(new URL('.', import.meta.url));
@@ -37,22 +36,18 @@ describe('Forward Parent Args', function() {
     it('should have created the output folder', function() {
       const exists = fs.existsSync(outputPath);
 
-      expect(exists).to.be.equal(true);
+      assert.equal(exists, true);
     });
 
     it('should output a file for the expected content from forwarded parent args', function() {
       const exists = fs.existsSync(path.join(outputPath, 'args.txt'));
 
-      expect(exists).to.be.equal(true);
+      assert.equal(exists, true);
     });
 
     it('should have the expected output for forwarded parent args', function() {
       const contents = fs.readFileSync(path.join(outputPath, 'args.txt'), 'utf-8');
-      const expected = globalThis.Deno
-        ? `--import=${new URL('../../test-register-deno.js', import.meta.url).href}`
-        : '--debug-port=3333';
-
-      expect(contents).to.be.equal(expected);
+      assert.deepEqual(JSON.parse(contents), process.execArgv);
     });
 
     after(async function() {
