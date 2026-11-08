@@ -21,6 +21,26 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
 
+  it('should forward stdout and stderr to their matching console methods', async function() {
+    const stdout = [];
+    const stderr = [];
+    const originalLog = console.log;
+    const originalError = console.error;
+    console.log = (text) => stdout.push(text);
+    console.error = (text) => stderr.push(text);
+
+    try {
+      const runner = new Runner(true);
+      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, 'separate-streams'));
+    } finally {
+      console.log = originalLog;
+      console.error = originalError;
+    }
+
+    assert.equal(stdout.join(''), 'useful output\n');
+    assert.equal(stderr.join(''), 'incidental warning\n');
+  });
+
   describe('default options with relative path', function() {
     let runner;
 
