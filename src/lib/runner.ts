@@ -161,10 +161,9 @@ class Runner implements RunnerInterface {
       const isDeno = Boolean(deno);
       const executable = deno ? deno.execPath() : process.execPath;
       const isWindows = os.platform() === 'win32';
-      const cliPath = binPath;
       const commandArgs = isDeno ? ['run', '-A'] : [];
       const forwardArgs = this.forwardParentArgs ? this.runtimeArgs : [];
-      const finalArgs = [...commandArgs, ...forwardArgs, cliPath];
+      const finalArgs = [...commandArgs, ...forwardArgs, binPath];
       // Without setup(), the child uses the parent's cwd; report that same directory on failure.
       const cwd = this.rootDir ?? process.cwd();
       let stdout = '';
