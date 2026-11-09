@@ -11,8 +11,8 @@ interface RunnerOptions {
 }
 
 interface SetupFile {
-  source: string;
-  destination: string;
+  source: string | URL;
+  destination: string | URL;
 }
 
 interface SetupOptions {
@@ -134,7 +134,10 @@ class Runner implements RunnerInterface {
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
-            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+            const destinationDirectory = typeof file.destination === 'string'
+              ? path.dirname(file.destination)
+              : new URL('.', file.destination);
+            fs.mkdirSync(destinationDirectory, { recursive: true });
             fs.copyFileSync(file.source, file.destination);
           });
         }
