@@ -26,9 +26,24 @@ interface RunCommandOptions {
 }
 
 export interface RunnerInterface {
+  /**
+   * @throws {string} Rejects when rootDir is not an absolute path.
+   * @throws {Error} Rejects if directory creation or file copying fails.
+   */
   setup(rootDir: string, options?: SetupOptions): Promise<void>;
+  /**
+   * @throws {TypeError} Throws synchronously if onStdOut is truthy and not a function.
+   * @throws {Error} Rejects if binPath does not exist.
+   * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
+   */
   runCommand(binPath: string, options?: RunCommandOptions): Promise<void>;
+  /**
+   * @throws {Error} Rejects if stopping the child process fails or the child emits an error while stopping.
+   */
   stopCommand(): Promise<void>;
+  /**
+   * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
+   */
   teardown(additionalFiles?: string[]): Promise<void>;
 }
 
@@ -102,6 +117,10 @@ class Runner implements RunnerInterface {
     this.childProcess = null;
   }
 
+  /**
+   * @throws {string} Rejects when rootDir is not an absolute path.
+   * @throws {Error} Rejects if directory creation or file copying fails.
+   */
   setup(rootDir: string, { setupFiles = [], create = true }: SetupOptions = {}): Promise<void> {
     this.setupFiles = setupFiles;
 
@@ -127,6 +146,11 @@ class Runner implements RunnerInterface {
     });
   }
 
+  /**
+   * @throws {TypeError} Throws synchronously if onStdOut is truthy and not a function.
+   * @throws {Error} Rejects if binPath does not exist.
+   * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
+   */
   runCommand(binPath: string, { args = [], onStdOut = null }: RunCommandOptions = {}): Promise<void> {
     if (onStdOut && typeof onStdOut !== 'function') {
       throw new TypeError('onStdOut must be passed a function or null');
@@ -217,6 +241,9 @@ class Runner implements RunnerInterface {
     });
   }
 
+  /**
+   * @throws {Error} Rejects if stopping the child process fails or the child emits an error while stopping.
+   */
   stopCommand(): Promise<void> {
     const child = this.childProcess;
 
@@ -256,6 +283,9 @@ class Runner implements RunnerInterface {
     });
   }
 
+  /**
+   * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
+   */
   teardown(additionalFiles: string[] = []): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       try {
