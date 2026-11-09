@@ -44,7 +44,7 @@ export interface RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles?: string[]): Promise<void>;
+  teardown(additionalFiles?: (string | URL)[]): Promise<void>;
 }
 
 /**
@@ -288,11 +288,11 @@ class Runner implements RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles: string[] = []): Promise<void> {
+  teardown(additionalFiles: (string | URL)[] = []): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       try {
         [...(this.setupFiles || []), ...additionalFiles].forEach((file) => {
-          const deletePath = typeof file === 'string' ? file : file.destination;
+          const deletePath = typeof file === 'string' || file instanceof URL ? file : file.destination;
 
           if (fs.existsSync(deletePath)) {
             if (fs.lstatSync(deletePath).isDirectory()) {

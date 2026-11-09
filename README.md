@@ -179,15 +179,13 @@ before(async function () {
 await runner.teardown();
 ```
 
-You can pass additional files or directories to `teardown` to have **gallinago** delete those too.
+You can pass additional files or directories as string paths or `file:` URL objects to `teardown` to have **gallinago** delete those too. Both types can be used in the same array.
 
 ```js
 await runner.teardown([
-  path.join(__dirname, 'build'),
-  path.join(__dirname, 'fixtures'),
-  .
-  .
-  .
+  path.join(__dirname, 'build.js'),
+  new URL('./fixtures/', import.meta.url),
+  // ...
 ]);
 ```
 
