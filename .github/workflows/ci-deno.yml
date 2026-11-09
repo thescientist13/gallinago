@@ -18,7 +18,7 @@ jobs:
       - name: Use Node.js 24
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 24.12.0
           cache: npm
 
       - name: Use Deno
@@ -29,5 +29,8 @@ jobs:
       - name: Installing project dependencies
         run: npm ci
 
-      - name: Test
+      - name: Build
+        run: npm run build
+
+      - name: Test compiled output
         run: npm run test:deno

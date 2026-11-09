@@ -16,16 +16,30 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Use Node.js ${{ matrix.node }}
+
+    - name: Use build Node.js
       uses: actions/setup-node@v6
       with:
-        node-version: ${{ matrix.node }}
+        node-version: 24.12.0
+
     - name: Installing project dependencies
       run: |
         npm ci
+
     - name: Lint
       run: |
         npm run lint
-    - name: Test
-      run: |
-        npm test
+
+    - name: Build
+      run: npm run build
+
+    - name: Check types
+      run: npm run check
+
+    - name: Use test Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ matrix.node }}
+
+    - name: Test compiled output
+      run: npm test

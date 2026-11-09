@@ -13,7 +13,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
-import { Runner } from '../../../src/index.js';
+import { Runner } from 'gallinago';
 
 describe('CLI Error Handling', function() {
 

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { Runner } from '../../../src/index.js';
+import { Runner } from 'gallinago';
 
 describe('teardown errors', function() {
   it('should reject when a directory cannot be removed', async function() {

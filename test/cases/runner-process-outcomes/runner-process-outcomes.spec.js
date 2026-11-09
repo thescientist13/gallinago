@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import { Runner } from '../../../src/index.js';
+import { Runner } from 'gallinago';
 
 const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.js');
 

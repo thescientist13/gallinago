@@ -8,8 +8,8 @@
  */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { Runner } from '../../../src/index.js';
-import { Runner as packageMainRunner } from '../../../src/index.js';
+import { Runner } from '../../../dist/lib/runner.js';
+import { Runner as packageMainRunner } from 'gallinago';
 
 describe('Package Main', function() {
 
