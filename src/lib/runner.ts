@@ -11,8 +11,8 @@ interface RunnerOptions {
 }
 
 interface SetupFile {
-  source: string;
-  destination: string;
+  source: string | URL;
+  destination: string | URL;
 }
 
 interface SetupOptions {
@@ -44,7 +44,7 @@ export interface RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles?: string[]): Promise<void>;
+  teardown(additionalFiles?: (string | URL)[]): Promise<void>;
 }
 
 /**
@@ -134,7 +134,10 @@ class Runner implements RunnerInterface {
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
-            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+            const destinationDirectory = typeof file.destination === 'string'
+              ? path.dirname(file.destination)
+              : new URL('.', file.destination);
+            fs.mkdirSync(destinationDirectory, { recursive: true });
             fs.copyFileSync(file.source, file.destination);
           });
         }
@@ -285,11 +288,11 @@ class Runner implements RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles: string[] = []): Promise<void> {
+  teardown(additionalFiles: (string | URL)[] = []): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       try {
         [...(this.setupFiles || []), ...additionalFiles].forEach((file) => {
-          const deletePath = typeof file === 'string' ? file : file.destination;
+          const deletePath = typeof file === 'string' || file instanceof URL ? file : file.destination;
 
           if (fs.existsSync(deletePath)) {
             if (fs.lstatSync(deletePath).isDirectory()) {
