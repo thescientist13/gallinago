@@ -21,7 +21,8 @@
   ],
   "engines": {
     "node": ">=22.18.0",
-    "deno": ">=2"
+    "deno": ">=2",
+    "bun": ">=1.4.5"
   },
   "exports": {
     ".": {
@@ -33,6 +34,7 @@
     "lint": "eslint --flag unstable_native_nodejs_ts_config .",
     "test": "c8 node test/run-tests.ts --test-timeout=30000",
     "test:deno": "node test/run-tests.ts --deno",
+    "test:bun": "bun test ./test/cases --timeout 30000",
     "test:tdd": "npm test -- --watch",
     "build": "tsdown",
     "build:watch": "tsdown --watch",

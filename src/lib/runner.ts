@@ -179,6 +179,7 @@ class Runner implements RunnerInterface {
 
       const deno = (globalThis as typeof globalThis & { Deno?: { execPath(): string } }).Deno;
       const isDeno = Boolean(deno);
+      // Node and Bun both expose their executable via process.execPath, so Bun uses this same branch.
       const executable = deno ? deno.execPath() : process.execPath;
       const isWindows = os.platform() === 'win32';
       const commandArgs = isDeno ? ['run', '-A'] : [];
