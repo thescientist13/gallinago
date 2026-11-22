@@ -5,11 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { Runner } from 'gallinago';
 
 describe('setup files', function() {
-  const source = new URL('../../fixtures/cli.js', import.meta.url);
+  const source = new URL('../../fixtures/cli.ts', import.meta.url);
 
   describe('string paths', function() {
     const output = new URL('./output-strings/', import.meta.url);
-    const destination = new URL('./nested/cli.js', output);
+    const destination = new URL('./nested/cli.ts', output);
     const runner = new Runner();
 
     before(async function() {
@@ -40,7 +40,7 @@ describe('setup files', function() {
   describe('URL paths', function() {
     const output = new URL('./output-urls/', import.meta.url);
     // test that the destination path is properly decoded when it contains encoded characters
-    const destination = new URL('./nested café %23%25/cli.js', output);
+    const destination = new URL('./nested café %23%25/cli.ts', output);
     const runner = new Runner();
 
     before(async function() {
@@ -54,7 +54,7 @@ describe('setup files', function() {
     });
 
     it('should copy the fixture into a directory with encoded characters', function() {
-      const destinationPath = fileURLToPath(output) + 'nested café #%/cli.js';
+      const destinationPath = fileURLToPath(output) + 'nested café #%/cli.ts';
 
       assert.equal(fs.readFileSync(destinationPath, 'utf8'), fs.readFileSync(source, 'utf8'));
     });

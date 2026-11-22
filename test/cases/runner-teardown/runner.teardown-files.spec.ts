@@ -6,7 +6,7 @@ import { Runner } from 'gallinago';
 
 describe('teardown additional files', function() {
   const output = new URL('./output/', import.meta.url);
-  const source = new URL('../../fixtures/cli.js', import.meta.url);
+  const source = new URL('../../fixtures/cli.ts', import.meta.url);
 
   after(function() {
     fs.rmSync(output, { recursive: true, force: true });
@@ -14,12 +14,12 @@ describe('teardown additional files', function() {
 
   describe('string paths', function() {
     it('should delete additional files and directories', async function() {
-      const file = new URL('./cli.js', output);
+      const file = new URL('./cli.ts', output);
       const directory = new URL('./nested/', output);
 
       fs.mkdirSync(directory, { recursive: true });
       fs.copyFileSync(source, file);
-      fs.copyFileSync(source, new URL('./cli.js', directory));
+      fs.copyFileSync(source, new URL('./cli.ts', directory));
 
       await new Runner().teardown([fileURLToPath(file), fileURLToPath(directory)]);
 
@@ -30,14 +30,14 @@ describe('teardown additional files', function() {
 
   describe('URL paths', function() {
     it('should delete additional files and directories alongside string paths', async function() {
-      const file = new URL('./cli.js', output);
+      const file = new URL('./cli.ts', output);
       const directory = new URL('./nested/', output);
-      const stringFile = new URL('./string-cli.js', output);
+      const stringFile = new URL('./string-cli.ts', output);
 
       fs.mkdirSync(directory, { recursive: true });
       fs.copyFileSync(source, file);
       fs.copyFileSync(source, stringFile);
-      fs.copyFileSync(source, new URL('./cli.js', directory));
+      fs.copyFileSync(source, new URL('./cli.ts', directory));
 
       await new Runner().teardown([
         file, directory, fileURLToPath(stringFile), new URL('./missing.js', output)
