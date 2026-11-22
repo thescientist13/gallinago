@@ -12,15 +12,15 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-        node: [18, 20, 22, 24]
+        node: [22, 24, 26]
 
     steps:
     - uses: actions/checkout@v6
 
-    - name: Use build Node.js
+    - name: Use Node.js
       uses: actions/setup-node@v6
       with:
-        node-version: 24.12.0
+        node-version-file: .nvmrc
 
     - name: Installing project dependencies
       run: |

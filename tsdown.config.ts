@@ -6,7 +6,6 @@ export default defineConfig({
   outDir: 'dist',
   format: 'esm',
   platform: 'node',
-  target: 'node18',
   fixedExtension: false,
   unbundle: true,
   deps: { neverBundle: true },
