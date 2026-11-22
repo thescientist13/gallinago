@@ -1,0 +1,36 @@
+name: Continuous Integration (Bun)
+
+on: [pull_request]
+
+jobs:
+  bun:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Installing project dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test compiled output
+        run: npm run test:bun

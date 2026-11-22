@@ -8,7 +8,7 @@
 
 [**Gallinago**](https://en.wikipedia.org/wiki/Snipe) is designed to assist with the running and testing of CLIs and binaries in a simple and controlled way.  It is best used in combination with fixtures and pre-scaffolded directories such that you can reproduce the various configuration and folder structures your CLI may need to support for its users and then validate the output.  Perfect for testing!
 
-Supports NodeJS 22.18.0 or newer and Deno 2 or newer.
+Supports NodeJS 22.18.0 or newer, Deno 2 or newer, and Bun 1.4.5 or newer.
 
 ![gallinago](./.github/assets/gallinago.jpg)
 
