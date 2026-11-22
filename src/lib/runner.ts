@@ -23,6 +23,7 @@ interface SetupOptions {
 interface RunCommandOptions {
   args?: string | string[];
   onStdOut?: ((message: string) => void) | null;
+  onStdErr?: ((message: string) => void) | null;
 }
 
 export interface RunnerInterface {
@@ -32,7 +33,7 @@ export interface RunnerInterface {
    */
   setup(rootDir: string, options?: SetupOptions): Promise<void>;
   /**
-   * @throws {TypeError} Throws synchronously if onStdOut is truthy and not a function.
+   * @throws {TypeError} Throws synchronously if onStdOut or onStdErr is truthy and not a function.
    * @throws {Error} Rejects if binPath does not exist.
    * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
    */
@@ -147,13 +148,17 @@ class Runner implements RunnerInterface {
   }
 
   /**
-   * @throws {TypeError} Throws synchronously if onStdOut is truthy and not a function.
+   * @throws {TypeError} Throws synchronously if onStdOut or onStdErr is truthy and not a function.
    * @throws {Error} Rejects if binPath does not exist.
    * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
    */
-  runCommand(binPath: string, { args = [], onStdOut = null }: RunCommandOptions = {}): Promise<void> {
+  runCommand(binPath: string, { args = [], onStdOut = null, onStdErr = null }: RunCommandOptions = {}): Promise<void> {
     if (onStdOut && typeof onStdOut !== 'function') {
       throw new TypeError('onStdOut must be passed a function or null');
+    }
+
+    if (onStdErr && typeof onStdErr !== 'function') {
+      throw new TypeError('onStdErr must be passed a function or null');
     }
 
     return new Promise<void>((resolve, reject) => {
@@ -222,6 +227,10 @@ class Runner implements RunnerInterface {
 
         if (this.enableStdOut) {
           console.error(text);
+        }
+
+        if (onStdErr) {
+          onStdErr(text);
         }
       });
 

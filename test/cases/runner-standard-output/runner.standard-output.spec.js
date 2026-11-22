@@ -5,8 +5,18 @@ import { Runner } from 'gallinago';
 
 const fixturesPath = path.join(process.cwd(), 'test/fixtures');
 
-describe('CLI Fixture with output handlers', function() {
+describe('CLI Fixture with standard output handlers', function() {
   describe('std out', function() {
+    it('should throw for a non-function stdout callback before spawning', function() {
+      const runner = new Runner();
+
+      assert.throws(
+        () => runner.runCommand(`${fixturesPath}/cli-writes-to-stdout.js`, { onStdOut: 'invalid' }),
+        { name: 'TypeError', message: 'onStdOut must be passed a function or null' }
+      );
+      assert.equal(runner.childProcess, null);
+    });
+
     it('should invoke the callback with the output', async function() {
       const onStdOutMock = mock.fn();
       const runner = new Runner();
