@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
 
@@ -11,8 +12,8 @@ interface RunnerOptions {
 }
 
 interface SetupFile {
-  source: string;
-  destination: string;
+  source: string | URL;
+  destination: string | URL;
 }
 
 interface SetupOptions {
@@ -28,16 +29,18 @@ interface RunCommandOptions {
 
 export interface RunnerInterface {
   /**
+   * @throws {TypeError} Rejects if rootDir is an invalid file URL.
    * @throws {string} Rejects when rootDir is not an absolute path.
    * @throws {Error} Rejects if directory creation or file copying fails.
    */
-  setup(rootDir: string, options?: SetupOptions): Promise<void>;
+  setup(rootDir: string | URL, options?: SetupOptions): Promise<void>;
   /**
    * @throws {TypeError} Throws synchronously if onStdOut or onStdErr is truthy and not a function.
+   * @throws {TypeError} Rejects if binPath is an invalid file URL.
    * @throws {Error} Rejects if binPath does not exist.
    * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
    */
-  runCommand(binPath: string, options?: RunCommandOptions): Promise<void>;
+  runCommand(binPath: string | URL, options?: RunCommandOptions): Promise<void>;
   /**
    * @throws {Error} Rejects if stopping the child process fails or the child emits an error while stopping.
    */
@@ -45,7 +48,7 @@ export interface RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles?: string[]): Promise<void>;
+  teardown(additionalFiles?: (string | URL)[]): Promise<void>;
 }
 
 /**
@@ -119,13 +122,17 @@ class Runner implements RunnerInterface {
   }
 
   /**
+   * @throws {TypeError} Rejects if rootDir is an invalid file URL.
    * @throws {string} Rejects when rootDir is not an absolute path.
    * @throws {Error} Rejects if directory creation or file copying fails.
    */
-  setup(rootDir: string, { setupFiles = [], create = true }: SetupOptions = {}): Promise<void> {
+  setup(rootDir: string | URL, { setupFiles = [], create = true }: SetupOptions = {}): Promise<void> {
     this.setupFiles = setupFiles;
 
     return new Promise<void>((resolve, reject) => {
+      // Convert file URLs to filesystem paths for OS normalization
+      rootDir = typeof rootDir === 'string' ? rootDir : fileURLToPath(rootDir);
+
       if (path.isAbsolute(rootDir)) {
         this.rootDir = rootDir;
 
@@ -135,7 +142,11 @@ class Runner implements RunnerInterface {
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
-            fs.mkdirSync(path.dirname(file.destination), { recursive: true });
+            const destinationPath = typeof file.destination === 'string'
+              ? file.destination
+              : fileURLToPath(file.destination);
+            const destinationDirectory = path.dirname(destinationPath);
+            fs.mkdirSync(destinationDirectory, { recursive: true });
             fs.copyFileSync(file.source, file.destination);
           });
         }
@@ -149,10 +160,11 @@ class Runner implements RunnerInterface {
 
   /**
    * @throws {TypeError} Throws synchronously if onStdOut or onStdErr is truthy and not a function.
+   * @throws {TypeError} Rejects if binPath is an invalid file URL.
    * @throws {Error} Rejects if binPath does not exist.
    * @throws {CommandError} Rejects on spawn failure, nonzero exit, or signal termination.
    */
-  runCommand(binPath: string, { args = [], onStdOut = null, onStdErr = null }: RunCommandOptions = {}): Promise<void> {
+  runCommand(binPath: string | URL, { args = [], onStdOut = null, onStdErr = null }: RunCommandOptions = {}): Promise<void> {
     if (onStdOut && typeof onStdOut !== 'function') {
       throw new TypeError('onStdOut must be passed a function or null');
     }
@@ -162,6 +174,9 @@ class Runner implements RunnerInterface {
     }
 
     return new Promise<void>((resolve, reject) => {
+      // Convert file URLs to filesystem paths for OS normalization
+      binPath = typeof binPath === 'string' ? binPath : fileURLToPath(binPath);
+
       const deno = (globalThis as typeof globalThis & { Deno?: { execPath(): string } }).Deno;
       const isDeno = Boolean(deno);
       const executable = deno ? deno.execPath() : process.execPath;
@@ -294,11 +309,11 @@ class Runner implements RunnerInterface {
   /**
    * @throws {Error} Rejects if inspecting or deleting a setup file or additional path fails.
    */
-  teardown(additionalFiles: string[] = []): Promise<void> {
+  teardown(additionalFiles: (string | URL)[] = []): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       try {
         [...(this.setupFiles || []), ...additionalFiles].forEach((file) => {
-          const deletePath = typeof file === 'string' ? file : file.destination;
+          const deletePath = typeof file === 'string' || file instanceof URL ? file : file.destination;
 
           if (fs.existsSync(deletePath)) {
             if (fs.lstatSync(deletePath).isDirectory()) {
