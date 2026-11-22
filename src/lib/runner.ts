@@ -142,9 +142,10 @@ class Runner implements RunnerInterface {
 
         if (setupFiles.length > 0) {
           setupFiles.forEach((file) => {
-            const destinationDirectory = typeof file.destination === 'string'
-              ? path.dirname(file.destination)
-              : new URL('.', file.destination);
+            const destinationPath = typeof file.destination === 'string'
+              ? file.destination
+              : fileURLToPath(file.destination);
+            const destinationDirectory = path.dirname(destinationPath);
             fs.mkdirSync(destinationDirectory, { recursive: true });
             fs.copyFileSync(file.source, file.destination);
           });
