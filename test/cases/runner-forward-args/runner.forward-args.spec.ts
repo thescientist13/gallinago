@@ -3,12 +3,12 @@
  * Runs the CLI fixture and ensures that params from the parent process are passed down into the child process.
  *
  * User Result
- * Should run cli.js runCommand successfully and outputs the expected result.
+ * Should run cli.ts runCommand successfully and outputs the expected result.
  *
  * runCommand
  *
  * runner = new Runner({ forwardParentArgs: true });
- * runCommand('cli.js')
+ * runCommand('cli.ts')
  *
  */
 import { describe, it, before, after } from 'node:test';
@@ -23,13 +23,13 @@ describe('Forward Parent Args', function() {
   const outputPath = fileURLToPath(new URL('./output', import.meta.url));
 
   describe('default options with forwardParentArgs set to true', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner({ forwardParentArgs: true });
       await runner.setup(outputPath);
       await runner.runCommand(
-        path.join(currentPath, 'cli.js') // binPath
+        path.join(currentPath, 'cli.ts') // binPath
       );
     });
 

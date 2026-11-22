@@ -4,7 +4,7 @@
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
  * User Result
- * Should run cli.js runCommand successfully with setup, runCommand and teardown functions called
+ * Should run cli.ts runCommand successfully with setup, runCommand and teardown functions called
  *
  * runCommand
  * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
@@ -26,13 +26,13 @@ describe('CLI Fixture', function() {
   }];
 
   describe('default options with relative path with args passed as an array', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner();
       await runner.setup(outputPath);
       await runner.runCommand(
-        `${fixturesPath}/cli.js`, // binPath
+        `${fixturesPath}/cli.ts`, // binPath
         { args: [fixturesPath] } // options
       );
     });
@@ -54,11 +54,11 @@ describe('CLI Fixture', function() {
     });
 
     it('should have an .eslintrc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cts`), true);
     });
 
     it('should have .mocharc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cts`), true);
     });
 
     it('should delete the output directory when told', function() {
@@ -69,13 +69,13 @@ describe('CLI Fixture', function() {
   });
 
   describe('setup with setupFiles', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner();
       await runner.setup(outputPath, { setupFiles });
       await runner.runCommand(
-        `${fixturesPath}/cli.js`, // binPath
+        `${fixturesPath}/cli.ts`, // binPath
         { args: fixturesPath } // options
       );
     });
@@ -97,11 +97,11 @@ describe('CLI Fixture', function() {
     });
 
     it('should have an .eslintrc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cts`), true);
     });
 
     it('should have .mocharc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cts`), true);
     });
 
     it('should have webcomponents-bundle.js file', function() {

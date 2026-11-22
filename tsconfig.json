@@ -6,7 +6,9 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "types": ["node"],
-    "lib": ["ES2022"]
+    "lib": ["ES2022"],
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["**/*.ts", "test/fixtures/.*.cts"]
 }

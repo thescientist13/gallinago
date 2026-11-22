@@ -12,19 +12,20 @@ const casesPath = path.join('test', 'cases');
 const specs = isDeno
   ? readdirSync(casesPath).flatMap((directory) =>
     readdirSync(path.join(casesPath, directory))
-      .filter((file) => file.endsWith('.spec.js'))
+      .filter((file) => file.endsWith('.spec.ts'))
       .map((file) => path.join(casesPath, directory, file))
   )
-  : ['test/cases/**/*.spec.js'];
+  : ['test/cases/**/*.spec.ts'];
 
 // Deno has no equivalent to Node's test timeout flag.
 const runtimeArgs = isDeno
   ? args.filter((arg) => !arg.startsWith('--test-timeout='))
   : args;
 
+// Type checking is handled by npm run check using the project Node typings.
 const child = spawn(isDeno ? 'deno' : process.execPath, [
   ...(isDeno
-    ? ['test', '-A', '--preload', './test/test-register-deno.js']
+    ? ['test', '--no-check', '-A', '--preload', './test/test-register-deno.ts']
     : ['--test']),
   ...runtimeArgs,
   ...specs,

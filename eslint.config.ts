@@ -15,7 +15,7 @@ export default [
   // undefined names are checked by tsc instead of ESLint's no-undef rule.
   ...tseslint.configs.recommended.map(config => ({
     ...config,
-    files: ['src/**/*.ts', 'tsdown.config.ts', 'eslint.config.ts']
+    files: ['**/*.ts', '**/*.cts']
   })),
   {
     // https://github.com/eslint/eslint/discussions/18304#discussioncomment-9069706

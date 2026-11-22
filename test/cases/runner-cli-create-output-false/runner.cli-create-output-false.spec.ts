@@ -4,7 +4,7 @@
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
  * User Result
- * Should run cli.js runCommand successfully with setup and not creating the output directory.
+ * Should run cli.ts runCommand successfully with setup and not creating the output directory.
  *
  * runCommand
  * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
@@ -20,7 +20,7 @@ describe('CLI Fixture', function() {
   const outputPath = fileURLToPath(new URL('./output/', import.meta.url));
 
   describe('default options with relative path that should not create the output dir', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner();

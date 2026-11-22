@@ -13,12 +13,9 @@ app.use(async ctx => {
   ctx.body = 'Hello World';
 });
 
-app.listen(port, async () => {
+app.listen(port, () => {
   console.debug(`server started on port ${port}`);
   const dirname = fileURLToPath(new URL('.', import.meta.url));
 
-  await liveReloadServer.watch(dirname, () => {
-    console.info(`Now live watching directory "${dirname}" for changes.`);
-    return Promise.resolve(true);
-  });
+  liveReloadServer.watch(dirname);
 });
