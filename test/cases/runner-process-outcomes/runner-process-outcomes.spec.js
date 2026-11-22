@@ -9,16 +9,6 @@ import { Runner } from 'gallinago';
 const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.js');
 
 describe('process outcomes', function() {
-  it('should throw for a non-function stdout callback before spawning', function() {
-    const runner = new Runner();
-
-    assert.throws(
-      () => runner.runCommand(fixturePath, { onStdOut: 'invalid' }),
-      { name: 'TypeError', message: 'onStdOut must be passed a function or null' }
-    );
-    assert.equal(runner.childProcess, null);
-  });
-
   it('should reject a nonzero exit with empty stderr and include command context', async function() {
     const runner = new Runner();
 

@@ -142,16 +142,18 @@ The promise resolves when the command exits with code `0`, even if it writes to 
 
 #### Options
 
-`runCommand` accepts an optional options object as the second argument. Combine `args` and `onStdOut` as needed:
+`runCommand` accepts an optional options object as the second argument. Combine `args`, `onStdOut`, and `onStdErr` as needed:
 
 ```js
 runner.runCommand(
   '/path/to/cli.js',
-  { args: '--version', onStdOut: (text) => console.log(text) }
+  { args: '--version', 
+  onStdOut: (text) => console.log(text) }
 );
 ```
 
 ##### onStdOut
+
 This is a callback function that is invoked with a string each time the child process writes to std out. Defaults to `null`.  In conjunction with `stopCommand`, this can be useful to listen for when a long running command is "ready", like waiting for a web server to start.
 
 ```js
@@ -168,6 +170,21 @@ before(async function () {
       }}
     ).catch(reject)
   });
+});
+```
+
+##### onStdErr
+
+This optional callback receives a decoded UTF-8 string for each stderr chunk, for both successful and failed commands. Defaults to `null`. Chunks are not guaranteed to be complete lines. Use it to capture warnings even when the command exits with code `0`:
+
+```js
+let stderr = '';
+
+await runner.runCommand('/path/to/cli.js', {
+  args: 'build',
+  onStdErr: (chunk) => {
+    stderr += chunk;
+  }
 });
 ```
 
