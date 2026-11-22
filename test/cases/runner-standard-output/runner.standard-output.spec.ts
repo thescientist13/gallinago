@@ -11,7 +11,8 @@ describe('CLI Fixture with standard output handlers', function() {
       const runner = new Runner();
 
       assert.throws(
-        () => runner.runCommand(`${fixturesPath}/cli-writes-to-stdout.js`, { onStdOut: 'invalid' }),
+        // @ts-expect-error Exercise runtime validation of an invalid callback.
+        () => runner.runCommand(`${fixturesPath}/cli-writes-to-stdout.ts`, { onStdOut: 'invalid' }),
         { name: 'TypeError', message: 'onStdOut must be passed a function or null' }
       );
       assert.equal(runner.childProcess, null);
@@ -22,7 +23,7 @@ describe('CLI Fixture with standard output handlers', function() {
       const runner = new Runner();
 
       await runner.runCommand(
-        `${fixturesPath}/cli-writes-to-stdout.js`,
+        `${fixturesPath}/cli-writes-to-stdout.ts`,
         { onStdOut: onStdOutMock }
       );
 

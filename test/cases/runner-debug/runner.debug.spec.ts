@@ -4,7 +4,7 @@
  * on copy-dots: https://github.com/thescientist13/copy-dots
  *
  * User Result
- * Should run cli.js runCommand and test debug output
+ * Should run cli.ts runCommand and test debug output
  *
  * runCommand
  * runCommand('test/fixtures/cli', { args: 'test/fixtures' })
@@ -22,8 +22,8 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
 
   it('should forward stdout and stderr to their matching console methods', async function() {
-    const stdout = [];
-    const stderr = [];
+    const stdout: string[] = [];
+    const stderr: string[] = [];
     const originalLog = console.log;
     const originalError = console.error;
     console.log = (text) => stdout.push(text);
@@ -31,7 +31,7 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
 
     try {
       const runner = new Runner({ enableStdOut: true });
-      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.js`, { args: 'separate-streams' }));
+      await assert.rejects(runner.runCommand(`${fixturesPath}/cli-process-outcomes.ts`, { args: 'separate-streams' }));
     } finally {
       console.log = originalLog;
       console.error = originalError;
@@ -42,13 +42,13 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
   });
 
   describe('default options with relative path', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner();
       await runner.setup(outputPath);
       await runner.runCommand(
-        `${fixturesPath}/cli.js`, // binPath
+        `${fixturesPath}/cli.ts`, // binPath
         { args: fixturesPath } // options
       );
     });
@@ -70,11 +70,11 @@ describe('CLI Fixture w/debug (stdOut) enabled', function() {
     });
 
     it('should have an .eslintrc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.eslintrc.cts`), true);
     });
 
     it('should have .mocharc file', function() {
-      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cjs`), true);
+      assert.equal(fs.existsSync(`${outputPath}/.mocharc.cts`), true);
     });
 
     after(async function() {

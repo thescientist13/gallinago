@@ -8,7 +8,7 @@
 
 ## Development
 
-The main development flows for this project are testing based.  Since Gallinago is written in TypeScript, run `npm run build:watch` in one terminal an `npm run test:tdd` in another.
+The main development flows for this project are testing based.  Since Gallinago is written in TypeScript, run `npm run build:watch` in one terminal and `npm run test:tdd` in another.
 
 To check linting and types:
 

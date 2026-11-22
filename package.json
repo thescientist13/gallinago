@@ -31,8 +31,8 @@
   },
   "scripts": {
     "lint": "eslint --flag unstable_native_nodejs_ts_config .",
-    "test": "c8 node test/run-tests.js --test-timeout=30000",
-    "test:deno": "node test/run-tests.js --deno",
+    "test": "c8 node test/run-tests.ts --test-timeout=30000",
+    "test:deno": "node test/run-tests.ts --deno",
     "test:tdd": "npm test -- --watch",
     "build": "tsdown",
     "build:watch": "tsdown --watch",
@@ -41,6 +41,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
+    "@types/fs-extra": "^9.0.13",
+    "@types/koa": "^2.15.2",
+    "@types/livereload": "^0.9.5",
     "@types/node": "^22.20.5",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "c8": "^12.0.0",

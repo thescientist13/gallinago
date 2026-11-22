@@ -1,3 +1,4 @@
+import { assertCommandError } from '../../helpers/command-error.ts';
 /*
  * Use Case
  * Runs the CLI fixture that copies dot files from fixtures directory.  Based
@@ -20,6 +21,7 @@ describe('CLI Error Handling', function() {
   it('should reject an invalid output callback without requiring arguments', function() {
     const runner = new Runner();
 
+    // @ts-expect-error Exercise runtime validation of an invalid callback.
     assert.throws(() => runner.runCommand('unused.js', { onStdOut: 'invalid' }), {
       name: 'TypeError',
       message: 'onStdOut must be passed a function or null'
@@ -39,7 +41,7 @@ describe('CLI Error Handling', function() {
     it('should throw an error that rootDir is not absolute', async function() {
       const runner = new Runner();
       await assert.rejects(
-        runner.setup('../../test/fixtures/cli.js'),
+        runner.setup('../../test/fixtures/cli.ts'),
         (error) => error === 'Error: rootDir is not an absolute path'
       );
     });
@@ -50,10 +52,10 @@ describe('CLI Error Handling', function() {
       const runner = new Runner();
       await assert.rejects(
         runner.runCommand(
-          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.js')
+          path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.ts')
         ),
         (error) => {
-          assert.ok(error instanceof Error);
+          assertCommandError(error);
           assert.notEqual(error.exitCode, 0);
           assert.match(error.stderr, /Error: Child process throwing a Promise\.reject to the parent\./);
           assert.ok(error.message.includes(error.stderr));

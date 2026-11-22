@@ -1,3 +1,5 @@
+import type { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { assertCommandError } from '../../helpers/command-error.ts';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import os from 'node:os';
@@ -6,15 +8,16 @@ import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { Runner } from 'gallinago';
 
-const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.js');
+const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.ts');
 
 describe('process outcomes', function() {
   it('should reject a nonzero exit with empty stderr and include command context', async function() {
     const runner = new Runner();
 
     await assert.rejects(runner.runCommand(fixturePath, { args: 'exit-without-stderr' }), (error) => {
-      assert.ok(error instanceof Error);
-      assert.match(error.command, /cli-process-outcomes\.js/);
+      assertCommandError(error);
+      assertCommandError(error);
+      assert.match(error.command, /cli-process-outcomes\.ts/);
       assert.equal(error.cwd, process.cwd());
       assert.equal(error.exitCode, 7);
       assert.equal(error.signal, null);
@@ -29,7 +32,7 @@ describe('process outcomes', function() {
 
   it('should accept an exit code of zero even when stderr has a warning', async function() {
     const runner = new Runner();
-    const output = [];
+    const output: string[] = [];
 
     await runner.runCommand(fixturePath, {
       args: 'warning-success',
@@ -43,6 +46,7 @@ describe('process outcomes', function() {
     const runner = new Runner();
 
     await assert.rejects(runner.runCommand(fixturePath, { args: 'separate-streams' }), (error) => {
+      assertCommandError(error);
       assert.equal(error.exitCode, 9);
       assert.equal(error.stdout, 'useful output\n');
       assert.equal(error.stderr, 'incidental warning\n');
@@ -55,6 +59,7 @@ describe('process outcomes', function() {
     const runner = new Runner();
 
     await assert.rejects(runner.runCommand(fixturePath, { args: 'large-output' }), (error) => {
+      assertCommandError(error);
       assert.equal(error.exitCode, 2);
       assert.equal(error.stdout.length, 64 * 1024);
       assert.equal(error.stderr.length, 64 * 1024);
@@ -71,10 +76,12 @@ describe('process outcomes', function() {
       args: 'wait-for-signal',
       onStdOut: (text) => {
         if (text.includes('ready')) {
+          assert.ok(runner.childProcess);
           runner.childProcess.kill();
         }
       }
     }), (error) => {
+      assertCommandError(error);
       assert.ok(error.signal);
       assert.equal(error.exitCode, null);
       assert.match(error.message, /terminated by signal/);
@@ -88,9 +95,12 @@ describe('process outcomes', function() {
     await runner.setup(missingDirectory, { create: false });
 
     await assert.rejects(runner.runCommand(fixturePath), (error) => {
+      assertCommandError(error);
       assert.equal(error.cwd, missingDirectory);
       assert.equal(error.exitCode, null);
       assert.equal(error.signal, null);
+      assert.ok(error.cause instanceof Error);
+      assert.ok('code' in error.cause);
       assert.equal(error.cause.code, 'ENOENT');
       assert.match(error.message, /could not start/);
       return true;
@@ -101,9 +111,10 @@ describe('process outcomes', function() {
     const runner = new Runner();
 
     await assert.rejects(runner.runCommand(fixturePath, { args: ['\0'] }), (error) => {
+      assertCommandError(error);
       assert.ok(error.cause instanceof Error);
       assert.equal(error.exitCode, null);
-      assert.match(error.command, /cli-process-outcomes\.js/);
+      assert.match(error.command, /cli-process-outcomes\.ts/);
       assert.equal(error.cwd, process.cwd());
       return true;
     });
@@ -114,6 +125,7 @@ describe('stopCommand after process termination', function() {
   it('should return after a child has already exited', async function() {
     const runner = new Runner();
     await runner.runCommand(fixturePath, { args: 'warning-success' });
+    assert.ok(runner.childProcess);
     runner.childProcess.kill = () => { throw new Error('already exited child was killed'); };
 
     await runner.stopCommand();
@@ -121,9 +133,10 @@ describe('stopCommand after process termination', function() {
 
   it('should reject when kill returns false and the child is still running', async function() {
     const runner = new Runner();
-    const child = new EventEmitter();
+    const child = Object.assign(new EventEmitter(), { exitCode: null as number | null });
     Object.assign(child, { exitCode: null, signalCode: null, pid: 1234, kill: () => false });
-    runner.childProcess = child;
+    // This test double implements only the process members stopCommand uses.
+    runner.childProcess = child as unknown as ChildProcessWithoutNullStreams;
 
     await assert.rejects(runner.stopCommand(), /Could not stop command with PID 1234/);
     assert.equal(child.listenerCount('exit'), 0);
@@ -132,52 +145,56 @@ describe('stopCommand after process termination', function() {
 
   it('should resolve when the child exits as kill returns false', async function() {
     const runner = new Runner();
-    const child = new EventEmitter();
+    const child = Object.assign(new EventEmitter(), { exitCode: null as number | null });
     Object.assign(child, {
       exitCode: null,
       signalCode: null,
       kill: () => { child.exitCode = 0; return false; }
     });
-    runner.childProcess = child;
+    // This test double implements only the process members stopCommand uses.
+    runner.childProcess = child as unknown as ChildProcessWithoutNullStreams;
 
     await runner.stopCommand();
   });
 
   it('should listen for exit before requesting termination', async function() {
     const runner = new Runner();
-    const child = new EventEmitter();
+    const child = Object.assign(new EventEmitter(), { exitCode: null as number | null });
     Object.assign(child, {
       exitCode: null,
       signalCode: null,
       kill: () => { child.emit('exit'); return true; }
     });
-    runner.childProcess = child;
+    // This test double implements only the process members stopCommand uses.
+    runner.childProcess = child as unknown as ChildProcessWithoutNullStreams;
 
     await runner.stopCommand();
   });
 
   it('should reject if kill throws', async function() {
     const runner = new Runner();
-    const child = new EventEmitter();
+    const child = Object.assign(new EventEmitter(), { exitCode: null as number | null });
     Object.assign(child, {
       exitCode: null,
       signalCode: null,
       kill: () => { throw new Error('kill failed'); }
     });
-    runner.childProcess = child;
+    // This test double implements only the process members stopCommand uses.
+    runner.childProcess = child as unknown as ChildProcessWithoutNullStreams;
 
     await assert.rejects(runner.stopCommand(), /kill failed/);
   });
 
   it('should reject if a child error follows a successful kill request', async function() {
     const runner = new Runner();
-    const child = new EventEmitter();
+    const child = Object.assign(new EventEmitter(), { exitCode: null as number | null });
     Object.assign(child, {
       exitCode: null,
       signalCode: null,
       kill: () => { queueMicrotask(() => child.emit('error', new Error('child error'))); return true; }
     });
-    runner.childProcess = child;
+    // This test double implements only the process members stopCommand uses.
+    runner.childProcess = child as unknown as ChildProcessWithoutNullStreams;
 
     await assert.rejects(runner.stopCommand(), /child error/);
   });

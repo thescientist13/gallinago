@@ -14,11 +14,11 @@ function isNotDirectory(file = '') {
   }
 }
 
-const scanFiles = (userDirectory) => {
-  return new Promise((resolve, reject) => {
+const scanFiles = (userDirectory: string) => {
+  return new Promise<string[]>((resolve, reject) => {
     try {
       const files = fs.readdirSync(userDirectory);
-      const userFiles = [];
+      const userFiles: string[] = [];
 
       const dotFiles = files
         .filter(isDotFile)
@@ -32,10 +32,11 @@ const scanFiles = (userDirectory) => {
   });
 };
 
-const validateUserPath = (args) => {
-  return new Promise((resolve, reject) => {
+const validateUserPath = (args: string[]) => {
+  return new Promise<string>((resolve, reject) => {
     if (args.length <= 2) {
       reject('Missing required paramater: path.  Usage is npx copy-dots /some/path');
+      return;
     }
 
     const userPath = path.isAbsolute(args[2])
@@ -50,16 +51,12 @@ const run = async () => {
 
   try {
     console.log('Validating user directory...');
-    let currentDirectory = process.cwd();
+    const currentDirectory = process.cwd();
     const userPathAbsolute = await validateUserPath(process.argv);
 
     console.log('Reading options...');
-    const options = process.argv.length > 3
-      ? process.argv.slice(3)
-      : [];
-
     console.log('Scanning Files in user directory...', userPathAbsolute);
-    const files = await scanFiles(userPathAbsolute, options);
+    const files = await scanFiles(userPathAbsolute);
 
     console.log('Copying filtered files into current directory...');
     files.forEach(file => {

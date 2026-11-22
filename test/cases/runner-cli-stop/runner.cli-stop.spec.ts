@@ -5,7 +5,7 @@
  * - any processes that it spawns wont be closed when killing the main process
  *
  * User Result
- * Should run cli.js runCommand successfully with stop function called
+ * Should run cli.ts runCommand successfully with stop function called
  * and correctly shuts down a live server
  *
  * runCommand
@@ -23,19 +23,19 @@ describe('Server Fixture for Manual Process Stop', function() {
   const fixturesPath = path.join(process.cwd(), 'test/fixtures');
 
   describe('default behavior using runner.stopCommand', function() {
-    let runner;
+    let runner: Runner;
 
     before(async function() {
       runner = new Runner();
-      await new Promise((resolve, reject) => {
-        const onStdOut = (message) => {
+      await new Promise<void>((resolve, reject) => {
+        const onStdOut = (message: string) => {
           if (message.includes('server started on port 8080')) {
             resolve();
           }
         };
         runner.setup(outputPath).then(() =>
           runner.runCommand(
-            `${fixturesPath}/server.js`,
+            `${fixturesPath}/server.ts`,
             { onStdOut }
           ).catch(reject)
         )
@@ -54,7 +54,7 @@ describe('Server Fixture for Manual Process Stop', function() {
   });
 
   describe('should not error if calling runner.stopCommand with no active command running', function() {
-    let runner;
+    let runner: Runner;
 
     before(function() {
       runner = new Runner();

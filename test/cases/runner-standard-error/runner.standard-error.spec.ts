@@ -1,15 +1,17 @@
+import { assertCommandError } from '../../helpers/command-error.ts';
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { Runner } from 'gallinago';
 
-const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.js');
+const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.ts');
 
 describe('standard error callback', function() {
   it('should throw for a non-function stderr callback before spawning', function() {
     const runner = new Runner();
 
     assert.throws(
+      // @ts-expect-error Exercise runtime validation of an invalid callback.
       () => runner.runCommand(fixturePath, { onStdErr: 'invalid' }),
       { name: 'TypeError', message: 'onStdErr must be passed a function or null' }
     );
@@ -18,8 +20,8 @@ describe('standard error callback', function() {
 
   it('should deliver stderr strings on success alongside stdout and console forwarding', async function() {
     const runner = new Runner({ enableStdOut: true });
-    const stdout = [];
-    const stderr = [];
+    const stdout: string[] = [];
+    const stderr: string[] = [];
     const log = mock.method(console, 'log', () => {});
     const error = mock.method(console, 'error', () => {});
 
@@ -51,6 +53,7 @@ describe('standard error callback', function() {
       args: 'separate-streams',
       onStdErr: (text) => { stderr += text; }
     }), (error) => {
+      assertCommandError(error);
       assert.equal(error.exitCode, 9);
       assert.equal(error.signal, null);
       assert.equal(error.stdout, 'useful output\n');
