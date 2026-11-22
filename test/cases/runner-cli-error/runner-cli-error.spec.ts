@@ -1,4 +1,3 @@
-import { assertCommandError } from '../../helpers/command-error.ts';
 /*
  * Use Case
  * Runs the CLI fixture that copies dot files from fixtures directory.  Based
@@ -15,6 +14,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { Runner } from 'gallinago';
+import type { CommandError } from 'gallinago';
 
 describe('CLI Error Handling', function() {
 
@@ -54,8 +54,8 @@ describe('CLI Error Handling', function() {
         runner.runCommand(
           path.join(process.cwd(), 'test/fixtures/cli-promise-rejection.ts')
         ),
-        (error) => {
-          assertCommandError(error);
+        (error: CommandError) => {
+          assert.ok(error instanceof Error);
           assert.notEqual(error.exitCode, 0);
           assert.match(error.stderr, /Error: Child process throwing a Promise\.reject to the parent\./);
           assert.ok(error.message.includes(error.stderr));

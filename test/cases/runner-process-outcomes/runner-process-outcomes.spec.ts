@@ -1,5 +1,4 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
-import { assertCommandError } from '../../helpers/command-error.ts';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import os from 'node:os';
@@ -7,6 +6,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { Runner } from 'gallinago';
+import type { CommandError } from 'gallinago';
 
 const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.ts');
 
@@ -14,9 +14,8 @@ describe('process outcomes', function() {
   it('should reject a nonzero exit with empty stderr and include command context', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, { args: 'exit-without-stderr' }), (error) => {
-      assertCommandError(error);
-      assertCommandError(error);
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'exit-without-stderr' }), (error: CommandError) => {
+      assert.ok(error instanceof Error);
       assert.match(error.command, /cli-process-outcomes\.ts/);
       assert.equal(error.cwd, process.cwd());
       assert.equal(error.exitCode, 7);
@@ -45,8 +44,7 @@ describe('process outcomes', function() {
   it('should keep stdout and stderr separate on failure', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, { args: 'separate-streams' }), (error) => {
-      assertCommandError(error);
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'separate-streams' }), (error: CommandError) => {
       assert.equal(error.exitCode, 9);
       assert.equal(error.stdout, 'useful output\n');
       assert.equal(error.stderr, 'incidental warning\n');
@@ -58,8 +56,7 @@ describe('process outcomes', function() {
   it('should keep only the last 65,536 characters of stdout and stderr', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, { args: 'large-output' }), (error) => {
-      assertCommandError(error);
+    await assert.rejects(runner.runCommand(fixturePath, { args: 'large-output' }), (error: CommandError) => {
       assert.equal(error.exitCode, 2);
       assert.equal(error.stdout.length, 64 * 1024);
       assert.equal(error.stderr.length, 64 * 1024);
@@ -80,8 +77,7 @@ describe('process outcomes', function() {
           runner.childProcess.kill();
         }
       }
-    }), (error) => {
-      assertCommandError(error);
+    }), (error: CommandError) => {
       assert.ok(error.signal);
       assert.equal(error.exitCode, null);
       assert.match(error.message, /terminated by signal/);
@@ -94,8 +90,7 @@ describe('process outcomes', function() {
     const missingDirectory = path.join(os.tmpdir(), 'gallinago-missing-' + randomUUID());
     await runner.setup(missingDirectory, { create: false });
 
-    await assert.rejects(runner.runCommand(fixturePath), (error) => {
-      assertCommandError(error);
+    await assert.rejects(runner.runCommand(fixturePath), (error: CommandError) => {
       assert.equal(error.cwd, missingDirectory);
       assert.equal(error.exitCode, null);
       assert.equal(error.signal, null);
@@ -110,8 +105,7 @@ describe('process outcomes', function() {
   it('should reject an invalid spawn argument with its cause', async function() {
     const runner = new Runner();
 
-    await assert.rejects(runner.runCommand(fixturePath, { args: ['\0'] }), (error) => {
-      assertCommandError(error);
+    await assert.rejects(runner.runCommand(fixturePath, { args: ['\0'] }), (error: CommandError) => {
       assert.ok(error.cause instanceof Error);
       assert.equal(error.exitCode, null);
       assert.match(error.command, /cli-process-outcomes\.ts/);
