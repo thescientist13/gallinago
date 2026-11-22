@@ -32,18 +32,16 @@ $ npm install gallinago --dev
 ## Usage
 
 To use Gallinago, you will just need two things
-1. An absolute path to your CLI
-1. An absolute path to the directory you want Gallinago to run your CLI in
+1. An absolute string path or `file:` URL object pointing to your CLI
+1. An absolute string path or `file:` URL object pointing to the directory you want Gallinago to run your CLI in
 
 ```js
-import path from 'path';
-import { Runner } = from 'gallinago';
-import { fileURLToPath, URL } from 'url';
+import { Runner } from 'gallinago';
 
 const runner = new Runner();
 
-const cliPath = fileURLToPath(new URL('./path/to/your/cli.js', import.meta.url)); // required
-const buildDir = fileURLToPath(new URL('./build', import.meta.url)); // required
+const cliPath = new URL('./path/to/your/cli.js', import.meta.url); // required
+const buildDir = new URL('./build/', import.meta.url); // required
 
 // this will also create the directory as well
 await runner.setup(buildDir);
@@ -93,7 +91,7 @@ const runner = new Runner({
 
 ### Runner.setup (required)
 
-`Runner.setup` initializes a directory for your CLI to be run in.  Returns a `Promise`.
+`Runner.setup` initializes a directory for your CLI to be run in. The directory can be an absolute string path or a `file:` URL object.  Returns a `Promise`.
 
 ```js
 await runner.setup(__dirname);
@@ -120,7 +118,7 @@ await runner.setup(__dirname, {
 
 ### Runner.runCommand
 
-`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`.  Use the `args` option to pass a string or array of arguments to your CLI (default is `[]`).  Returns a `Promise`.
+`Runner.runCommand` runs the script provided to Gallinago against the directory provided in `Runner.setup`. The script can be a string path or a `file:` URL object.  Use the `args` option to pass a string or array of arguments to your CLI (default is `[]`).  Returns a `Promise`.
 
 ```js
 await runner.runCommand(
