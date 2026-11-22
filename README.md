@@ -94,7 +94,7 @@ const runner = new Runner({
 `Runner.setup` initializes a directory for your CLI to be run in. The directory can be an absolute string path or a `file:` URL object.  Returns a `Promise`.
 
 ```js
-await runner.setup(__dirname);
+await runner.setup(new URL('./build/', import.meta.url));
 ```
 
 Optionally, you can provide "setup" files if you want to copy additional files into the target directory, say from _node_modules_ or a fixtures folder.  You can provide these files as an array of objects.
@@ -107,7 +107,7 @@ The optional second argument is an options object with the following properties:
 - `create` - automatically create the directory provided in the first param (default is `true`)
 
 ```js
-await runner.setup(__dirname, {
+await runner.setup(new URL('./build/', import.meta.url), {
   setupFiles: [{
     source: new URL('./node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js', import.meta.url),
     destination: new URL('./build/webcomponents-bundle.js', import.meta.url)
@@ -145,7 +145,7 @@ The promise resolves when the command exits with code `0`, even if it writes to 
 ```js
 runner.runCommand(
   '/path/to/cli.js',
-  { args: '--version', 
+  { args: '--version',
   onStdOut: (text) => console.log(text) }
 );
 ```
@@ -198,7 +198,7 @@ You can pass additional files or directories as string paths or `file:` URL obje
 
 ```js
 await runner.teardown([
-  path.join(__dirname, 'build.js'),
+  new URL('./build.js', import.meta.url),
   new URL('./fixtures/', import.meta.url),
   // ...
 ]);
