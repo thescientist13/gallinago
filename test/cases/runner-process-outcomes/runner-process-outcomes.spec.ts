@@ -1,4 +1,3 @@
-import type { ChildProcessWithoutNullStreams } from 'node:child_process';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import os from 'node:os';
@@ -6,6 +5,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { Runner } from 'gallinago';
+import type { ChildProcessWithoutNullStreams } from 'node:child_process';
 import type { CommandError } from 'gallinago';
 
 const fixturePath = path.join(process.cwd(), 'test/fixtures/cli-process-outcomes.ts');
